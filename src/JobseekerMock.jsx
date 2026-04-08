@@ -20,7 +20,8 @@ const SCREENS = [
 ];
 
 const PHASES = {
-  "登録": ["SMS認証", "基本情報", "写真/動画", "Q&A", "敬語変換確認", "登録完了"],
+  "CS(未登録)": ["CSホーム", "CS求人詳細", "会員登録誘導"],
+  "登録": ["SMS認証", "基本情報", "基本Q&A", "設問Q&A", "写真", "登録完了"],
   "メイン": ["ホーム(フリック)", "スカウト詳細", "求人詳細", "AI面談", "面談完了", "スカウト履歴", "日程調整", "新着求人", "やりとり", "マイページ"],
 };
 
@@ -179,23 +180,271 @@ function Tag({ children, color }) {
 
 // ========== SCREENS ==========
 
+// ========== CS SCREENS (未登録) ==========
+
+function ScreenCSHome({ onNavigate }) {
+  const jobs = [
+    { company: "サンプル建設", role: "施工管理", area: "東京都新宿区", color: "#2E6FD4" },
+    { company: "ABC歯科クリニック", role: "歯科助手", area: "東京都渋谷区", color: "#1D9E75" },
+    { company: "ケアハウスさくら", role: "介護スタッフ", area: "東京都世田谷区", color: "#534AB7" },
+  ];
+  return (
+    <>
+      <div style={{ flex: 1, overflow: "auto" }}>
+        {/* Header */}
+        <div style={{
+          height: 48, background: "#fff", display: "flex",
+          alignItems: "center", justifyContent: "space-between",
+          padding: "0 16px", borderBottom: "1px solid #E8E6E1", flexShrink: 0,
+        }}>
+          <div style={{ fontSize: 20, fontWeight: 800, color: "#E8593C" }}>MOTA</div>
+          <div onClick={() => onNavigate("SMS認証")} style={{
+            padding: "5px 14px", borderRadius: 6, background: "#E8593C",
+            color: "#fff", fontSize: 12, fontWeight: 700, cursor: "pointer",
+          }}>ログイン / 登録</div>
+        </div>
+
+        {/* Hero banner */}
+        <div style={{
+          height: 180, background: "linear-gradient(135deg, #E8593C 0%, #FAC775 100%)",
+          display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+          padding: "0 24px", textAlign: "center",
+        }}>
+          <div style={{ fontSize: 22, fontWeight: 800, color: "#fff", marginBottom: 6, lineHeight: 1.4 }}>
+            あなたにぴったりの<br />仕事が見つかる
+          </div>
+          <div style={{ fontSize: 12, color: "rgba(255,255,255,0.85)", lineHeight: 1.6 }}>
+            簡単プロフィール登録で企業からスカウトが届く
+          </div>
+        </div>
+
+        {/* 新着企業情報リスト */}
+        <div style={{ padding: "16px 16px 8px" }}>
+          <div style={{ fontSize: 15, fontWeight: 700, color: "#1a1a1a", marginBottom: 12 }}>
+            新着の企業情報
+          </div>
+          {jobs.map((j, i) => (
+            <div key={i} onClick={() => onNavigate("CS求人詳細")} style={{
+              display: "flex", gap: 12, alignItems: "center",
+              background: "#fff", borderRadius: 10, padding: 12, marginBottom: 8,
+              border: "1px solid #E8E6E1", cursor: "pointer",
+            }}>
+              {/* サムネイル */}
+              <div style={{
+                width: 56, height: 56, borderRadius: 8, background: j.color, flexShrink: 0,
+                display: "flex", alignItems: "center", justifyContent: "center",
+                color: "rgba(255,255,255,0.5)", fontSize: 10,
+              }}>写真</div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontSize: 14, fontWeight: 700, color: "#1a1a1a", marginBottom: 2 }}>{j.company}</div>
+                <div style={{ fontSize: 12, color: "#5F5E5A" }}>{j.role}</div>
+                <div style={{ fontSize: 11, color: "#8C8A82" }}>{j.area}</div>
+              </div>
+              <span style={{ fontSize: 14, color: "#D3D1C7" }}>›</span>
+            </div>
+          ))}
+        </div>
+
+        {/* もっと見たい人は会員登録へ CTA */}
+        <div style={{ padding: "4px 16px 16px" }}>
+          <div onClick={() => onNavigate("会員登録誘導")} style={{
+            background: "linear-gradient(135deg, #FFF3ED, #FFEEE4)",
+            borderRadius: 12, padding: "16px 20px", textAlign: "center",
+            border: "1px solid #F0997B", cursor: "pointer",
+          }}>
+            <div style={{ fontSize: 14, fontWeight: 700, color: "#E8593C", marginBottom: 4 }}>
+              もっと求人を見たい方は
+            </div>
+            <div style={{ fontSize: 12, color: "#D85A30", marginBottom: 10 }}>
+              無料会員登録で全ての求人＋スカウト機能が使えます
+            </div>
+            <div style={{
+              display: "inline-block", padding: "8px 28px", borderRadius: 8,
+              background: "#E8593C", color: "#fff", fontSize: 14, fontWeight: 700,
+            }}>無料で会員登録する</div>
+          </div>
+        </div>
+
+        {/* 特集エリア */}
+        <div style={{ padding: "0 16px 16px" }}>
+          <div style={{ fontSize: 15, fontWeight: 700, color: "#1a1a1a", marginBottom: 10 }}>特集</div>
+          <div style={{ display: "flex", gap: 10 }}>
+            <div style={{
+              flex: 1, borderRadius: 10, overflow: "hidden", border: "1px solid #E8E6E1",
+            }}>
+              <div style={{ height: 80, background: "linear-gradient(135deg, #2E6FD4, #85B7EB)" }} />
+              <div style={{ padding: 10 }}>
+                <div style={{ fontSize: 12, fontWeight: 700, color: "#1a1a1a" }}>未経験OK特集</div>
+                <div style={{ fontSize: 10, color: "#8C8A82" }}>初めてでも安心の求人</div>
+              </div>
+            </div>
+            <div style={{
+              flex: 1, borderRadius: 10, overflow: "hidden", border: "1px solid #E8E6E1",
+            }}>
+              <div style={{ height: 80, background: "linear-gradient(135deg, #1D9E75, #5DCAA5)" }} />
+              <div style={{ padding: 10 }}>
+                <div style={{ fontSize: 12, fontWeight: 700, color: "#1a1a1a" }}>高収入特集</div>
+                <div style={{ fontSize: 10, color: "#8C8A82" }}>年収400万以上の求人</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* MOTAの使い方 */}
+        <div style={{ padding: "0 16px 20px" }}>
+          <div style={{ fontSize: 15, fontWeight: 700, color: "#1a1a1a", marginBottom: 10 }}>MOTAの使い方</div>
+          {[
+            { step: "1", text: "簡単プロフィール登録（3分）", sub: "写真とQ&Aに答えるだけ" },
+            { step: "2", text: "企業からスカウトが届く", sub: "あなたに興味のある企業から直接連絡" },
+            { step: "3", text: "AI面談で気軽に話す", sub: "スマホで簡単にビデオ面談" },
+          ].map((item, i) => (
+            <div key={i} style={{
+              display: "flex", gap: 12, alignItems: "center",
+              padding: "10px 0", borderBottom: i < 2 ? "1px solid #F1EFE8" : "none",
+            }}>
+              <div style={{
+                width: 28, height: 28, borderRadius: 14, background: "#E8593C",
+                color: "#fff", fontSize: 13, fontWeight: 800,
+                display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
+              }}>{item.step}</div>
+              <div>
+                <div style={{ fontSize: 13, fontWeight: 600, color: "#1a1a1a" }}>{item.text}</div>
+                <div style={{ fontSize: 11, color: "#8C8A82" }}>{item.sub}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </>
+  );
+}
+
+function ScreenCSJobDetail({ onNavigate }) {
+  return (
+    <>
+      <Header title="求人詳細" onBack={() => onNavigate("CSホーム")} />
+      <div style={{ flex: 1, padding: "0", overflow: "auto" }}>
+        <div style={{
+          height: 160, background: "linear-gradient(135deg, #2E6FD4, #1D9E75)",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          color: "rgba(255,255,255,0.5)", fontSize: 13,
+        }}>企業写真</div>
+        <div style={{ padding: "16px 20px" }}>
+          <div style={{ fontSize: 18, fontWeight: 800, color: "#1a1a1a", marginBottom: 4 }}>施工管理スタッフ</div>
+          <div style={{ fontSize: 13, color: "#5F5E5A", marginBottom: 14 }}>株式会社サンプル建設</div>
+          <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 14 }}>
+            <Tag color="orange">正社員</Tag>
+            <Tag color="green">未経験OK</Tag>
+            <Tag color="blue">資格支援あり</Tag>
+          </div>
+          {[
+            ["仕事内容", "建設現場の工程・品質・安全管理。入社後3ヶ月の研修あり。"],
+            ["給与", "月給25万〜35万円（年収350〜450万）"],
+            ["勤務地", "東京都新宿区西新宿 ※転勤なし"],
+            ["勤務時間", "8:00〜17:00（実働8h）"],
+            ["休日", "完全週休2日制（土日）、祝日、年末年始"],
+            ["福利厚生", "社保完備、交通費全額支給、資格取得支援"],
+          ].map(([k, v]) => (
+            <div key={k} style={{ marginBottom: 12 }}>
+              <div style={{ fontSize: 12, fontWeight: 700, color: "#8C8A82", marginBottom: 2 }}>{k}</div>
+              <div style={{ fontSize: 13, color: "#1a1a1a", lineHeight: 1.6 }}>{v}</div>
+            </div>
+          ))}
+          {/* アクションボタン → 会員登録誘導 */}
+          <div style={{
+            background: "#F7F6F3", borderRadius: 12, padding: 16, marginTop: 8, textAlign: "center",
+          }}>
+            <div style={{ fontSize: 13, fontWeight: 700, color: "#1a1a1a", marginBottom: 4 }}>この求人に興味がありますか？</div>
+            <div style={{ fontSize: 11, color: "#8C8A82", marginBottom: 12 }}>面談申込・保留・お断りには会員登録が必要です</div>
+            <div style={{ display: "flex", gap: 8 }}>
+              <div style={{ flex: 1, opacity: 0.4 }}>
+                <Btn small outline>お断り</Btn>
+              </div>
+              <div style={{ flex: 1, opacity: 0.4 }}>
+                <Btn small outline>保留</Btn>
+              </div>
+              <div style={{ flex: 1.2 }} onClick={() => onNavigate("会員登録誘導")}>
+                <Btn small>面談申込</Btn>
+              </div>
+            </div>
+            <div onClick={() => onNavigate("SMS認証")} style={{
+              marginTop: 10, fontSize: 12, color: "#E8593C", fontWeight: 600, cursor: "pointer",
+            }}>無料で会員登録する →</div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}
+
+function ScreenSignupPrompt({ onNavigate }) {
+  return (
+    <>
+      <Header title="会員登録" onBack={() => onNavigate("CSホーム")} />
+      <div style={{
+        flex: 1, display: "flex", flexDirection: "column",
+        alignItems: "center", justifyContent: "center", padding: "24px 20px",
+      }}>
+        <div style={{
+          width: 72, height: 72, borderRadius: 36, background: "#FFF3ED",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          fontSize: 32, marginBottom: 16,
+        }}>🔓</div>
+        <div style={{ fontSize: 18, fontWeight: 800, color: "#1a1a1a", marginBottom: 8 }}>会員登録が必要です</div>
+        <div style={{ fontSize: 13, color: "#5F5E5A", textAlign: "center", lineHeight: 1.7, marginBottom: 24 }}>
+          面談申込・保留・お断りなどの<br />
+          アクションを行うには無料の会員登録が必要です。<br />
+          登録は3分で完了します。
+        </div>
+        <div style={{ width: "100%", marginBottom: 10 }}>
+          <div onClick={() => onNavigate("SMS認証")}><Btn>無料で会員登録する</Btn></div>
+        </div>
+        <div style={{ width: "100%" }}>
+          <div onClick={() => onNavigate("CSホーム")}><Btn small outline>あとで登録する</Btn></div>
+        </div>
+        <div style={{ marginTop: 20 }}>
+          <div style={{ fontSize: 13, fontWeight: 700, color: "#1a1a1a", marginBottom: 8 }}>登録するとできること</div>
+          {[
+            "企業からスカウトが届く",
+            "AI面談で気軽に面接体験",
+            "面接日程をアプリ内で調整",
+            "全ての求人に応募できる",
+          ].map((text, i) => (
+            <div key={i} style={{
+              display: "flex", alignItems: "center", gap: 8, marginBottom: 6,
+              fontSize: 12, color: "#3D3D3A",
+            }}>
+              <span style={{ color: "#E8593C", fontWeight: 700 }}>✓</span>
+              {text}
+            </div>
+          ))}
+        </div>
+      </div>
+    </>
+  );
+}
+
+// ========== REGISTRATION SCREENS ==========
+
 function ScreenSMS({ onNavigate }) {
   return (
     <>
-      <Header title="MOTA" />
+      <Header title="会員登録" onBack={() => onNavigate("CSホーム")} />
       <div style={{ flex: 1, padding: "24px 20px", overflow: "auto" }}>
-        <div style={{ textAlign: "center", marginBottom: 28 }}>
-          <div style={{ fontSize: 28, fontWeight: 800, color: "#E8593C", letterSpacing: 2 }}>MOTA</div>
-          <div style={{ fontSize: 13, color: "#5F5E5A", marginTop: 6 }}>あなたにぴったりの仕事が見つかる</div>
+        <div style={{ textAlign: "center", marginBottom: 24 }}>
+          <div style={{ fontSize: 24, fontWeight: 800, color: "#E8593C", letterSpacing: 2 }}>MOTA</div>
+          <div style={{ fontSize: 13, color: "#5F5E5A", marginTop: 4 }}>無料会員登録（3分で完了）</div>
         </div>
+        <StepIndicator current={0} total={4} />
+        <Field label="氏名" placeholder="山田 太郎" required />
         <Field label="電話番号" placeholder="090-0000-0000" required />
-        <div style={{ height: 12 }} />
+        <div style={{ height: 8 }} />
         <Btn>認証コードを送信</Btn>
-        <div style={{ height: 20 }} />
+        <div style={{ height: 16 }} />
         <Field label="認証コード（6桁）" placeholder="000000" />
-        <div style={{ height: 12 }} />
-        <Btn disabled>認証して登録を始める</Btn>
-        <div style={{ textAlign: "center", marginTop: 20, fontSize: 12, color: "#8C8A82" }}>
+        <div style={{ height: 8 }} />
+        <Btn disabled>認証して次へ</Btn>
+        <div style={{ textAlign: "center", marginTop: 16, fontSize: 12, color: "#8C8A82" }}>
           すでにアカウントをお持ちの方は<span style={{ color: "#E8593C", fontWeight: 600 }}>こちら</span>
         </div>
       </div>
@@ -206,21 +455,146 @@ function ScreenSMS({ onNavigate }) {
 function ScreenBasicInfo({ onNavigate }) {
   return (
     <>
-      <Header title="基本情報" sub="Step 1 / 3" onBack={() => onNavigate("SMS認証")} />
-      <StepIndicator current={0} total={3} />
+      <Header title="簡単応募ステップ" onBack={() => onNavigate("SMS認証")} />
+      <StepIndicator current={1} total={4} />
       <div style={{ flex: 1, padding: "0 20px 20px", overflow: "auto" }}>
-        <Field label="氏名" placeholder="山田 太郎" required />
-        <Field label="フリガナ" placeholder="ヤマダ タロウ" required />
-        <Field label="生年月日" placeholder="1998/01/01" required />
-        <Field label="住所（都道府県）" placeholder="東京都" required />
-        <Field label="最終学歴" placeholder="選択してください ▼" required />
-        <Field label="メールアドレス" placeholder="example@email.com" required />
-        <Field label="保有免許・資格" placeholder="任意入力" />
-        <div style={{ height: 8 }} />
-        <div style={{ fontSize: 11, color: "#8C8A82", marginBottom: 12 }}>
-          ※途中で離脱しても、完了したステップまで保存されます
+        <div style={{
+          background: "#EEFBF3", borderRadius: 10, padding: 12, marginBottom: 16,
+          fontSize: 12, color: "#1D9E75", fontWeight: 500, textAlign: "center",
+        }}>
+          SMS認証が完了しました ✓
         </div>
-        <Btn>次へ（写真/動画）</Btn>
+        <div style={{ fontSize: 15, fontWeight: 700, color: "#1a1a1a", marginBottom: 14 }}>基本情報を入力</div>
+        <Field label="住所（市区町村まで）" placeholder="東京都新宿区" required />
+        <Field label="メールアドレス" placeholder="example@email.com（任意）" />
+        <div style={{
+          background: "#F7F6F3", borderRadius: 8, padding: 10,
+          fontSize: 11, color: "#8C8A82", marginBottom: 16, lineHeight: 1.5,
+        }}>
+          メールアドレスを登録するとスカウト通知をメールでも受け取れます
+        </div>
+        <Btn>次へ</Btn>
+      </div>
+    </>
+  );
+}
+
+function ScreenBasicQA({ onNavigate }) {
+  const questions = [
+    { num: 1, q: "生年月日を教えてください", placeholder: "1998年1月1日", icon: "🎂" },
+    { num: 2, q: "最終学歴は？", placeholder: "選択してください ▼", icon: "🎓" },
+    { num: 3, q: "保有している免許・資格は？", placeholder: "例：普通自動車免許", icon: "📋" },
+  ];
+  return (
+    <>
+      <Header title="基本情報" onBack={() => onNavigate("基本情報")} />
+      <StepIndicator current={2} total={5} />
+      <div style={{ flex: 1, padding: "0 20px 20px", overflow: "auto" }}>
+        <div style={{ fontSize: 13, color: "#5F5E5A", marginBottom: 14, textAlign: "center" }}>
+          あなたについて教えてください
+        </div>
+        {questions.map((item, i) => (
+          <div key={i} style={{
+            background: "#fff", borderRadius: 12, padding: 16, marginBottom: 12,
+            border: "1px solid #E8E6E1",
+          }}>
+            <div style={{
+              display: "flex", alignItems: "center", gap: 8, marginBottom: 10,
+            }}>
+              <span style={{ fontSize: 20 }}>{item.icon}</span>
+              <div style={{ fontSize: 14, fontWeight: 700, color: "#1a1a1a" }}>Q{item.num}. {item.q}</div>
+            </div>
+            <div style={{
+              height: 42, borderRadius: 8, border: "1.5px solid #D3D1C7",
+              display: "flex", alignItems: "center", padding: "0 12px",
+              fontSize: 13, color: "#B4B2A9", background: "#FAFAF8",
+            }}>
+              {item.placeholder}
+            </div>
+          </div>
+        ))}
+        <Btn>次へ</Btn>
+      </div>
+    </>
+  );
+}
+
+function ScreenClientQA({ onNavigate }) {
+  const questions = [
+    { num: 1, q: "あなたの得意なことは何ですか？" },
+    { num: 2, q: "どんな職場で働きたいですか？" },
+    { num: 3, q: "仕事で大切にしていることは？" },
+  ];
+  return (
+    <>
+      <Header title="設問Q&A" onBack={() => onNavigate("基本Q&A")} />
+      <StepIndicator current={3} total={5} />
+      <div style={{ flex: 1, padding: "0 20px 20px", overflow: "auto" }}>
+        {/* キャッチ */}
+        <div style={{
+          textAlign: "center", marginBottom: 16, padding: "12px 0",
+        }}>
+          <div style={{ fontSize: 22, fontWeight: 800, color: "#E8593C", marginBottom: 4 }}>
+            3問で完了！
+          </div>
+          <div style={{ fontSize: 13, color: "#5F5E5A" }}>
+            テキストでも動画でもOK！あなたらしさを伝えましょう
+          </div>
+        </div>
+
+        {questions.map((item, i) => (
+          <div key={i} style={{
+            background: "#fff", borderRadius: 12, padding: 16, marginBottom: 12,
+            border: "1px solid #E8E6E1",
+          }}>
+            <div style={{
+              display: "flex", alignItems: "center", gap: 8, marginBottom: 10,
+            }}>
+              <div style={{
+                width: 28, height: 28, borderRadius: 14, background: "#E8593C",
+                color: "#fff", fontSize: 13, fontWeight: 800,
+                display: "flex", alignItems: "center", justifyContent: "center",
+              }}>Q{item.num}</div>
+              <div style={{ fontSize: 14, fontWeight: 700, color: "#1a1a1a", flex: 1 }}>{item.q}</div>
+            </div>
+            {/* テキスト回答 */}
+            <div style={{
+              borderRadius: 8, border: "1.5px solid #D3D1C7", padding: 12,
+              minHeight: 56, fontSize: 13, color: "#B4B2A9", background: "#FAFAF8",
+              marginBottom: 8,
+            }}>
+              回答を入力...
+            </div>
+            {/* 動画回答ボタン */}
+            <div style={{
+              display: "flex", alignItems: "center", justifyContent: "center",
+              gap: 8,
+            }}>
+              <div style={{ flex: 1, height: 1, background: "#E8E6E1" }} />
+              <span style={{ fontSize: 11, color: "#B4B2A9" }}>または</span>
+              <div style={{ flex: 1, height: 1, background: "#E8E6E1" }} />
+            </div>
+            <div style={{
+              marginTop: 8, padding: "10px 16px", borderRadius: 10,
+              border: "1.5px solid #AFA9EC", background: "#F0EDFE",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              gap: 8, cursor: "pointer",
+            }}>
+              <span style={{ fontSize: 18 }}>🎥</span>
+              <div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: "#534AB7" }}>動画で回答する</div>
+                <div style={{ fontSize: 10, color: "#7F77DD" }}>30秒であなたの人柄が伝わります</div>
+              </div>
+            </div>
+          </div>
+        ))}
+        <div style={{
+          background: "#F0EDFE", borderRadius: 8, padding: 10, marginBottom: 12,
+          fontSize: 11, color: "#534AB7", textAlign: "center",
+        }}>
+          💡 話し言葉でOK！AIが自動で敬語に変換します
+        </div>
+        <Btn>次へ</Btn>
       </div>
     </>
   );
@@ -229,110 +603,40 @@ function ScreenBasicInfo({ onNavigate }) {
 function ScreenPhoto({ onNavigate }) {
   return (
     <>
-      <Header title="写真/動画" sub="Step 2 / 3" onBack={() => onNavigate("基本情報")} />
-      <StepIndicator current={1} total={3} />
+      <Header title="プロフィール写真" onBack={() => onNavigate("設問Q&A")} />
+      <StepIndicator current={4} total={5} />
       <div style={{ flex: 1, padding: "0 20px 20px", overflow: "auto" }}>
-        <div style={{ fontSize: 14, fontWeight: 700, color: "#1a1a1a", marginBottom: 6 }}>プロフィール写真</div>
-        <div style={{ fontSize: 12, color: "#5F5E5A", marginBottom: 16 }}>企業があなたの雰囲気を知るための写真です</div>
-        <div style={{
-          width: 140, height: 140, borderRadius: 70, border: "2px dashed #D3D1C7",
-          display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
-          margin: "0 auto 24px", background: "#F7F6F3", cursor: "pointer",
-        }}>
-          <span style={{ fontSize: 32, color: "#B4B2A9" }}>+</span>
-          <span style={{ fontSize: 11, color: "#8C8A82" }}>写真を追加</span>
-        </div>
-        <div style={{ fontSize: 14, fontWeight: 700, color: "#1a1a1a", marginBottom: 6 }}>自己紹介動画（任意）</div>
-        <div style={{ fontSize: 12, color: "#5F5E5A", marginBottom: 16 }}>30秒程度の動画であなたの人柄を伝えましょう</div>
-        <div style={{
-          height: 120, borderRadius: 12, border: "2px dashed #D3D1C7",
-          display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
-          background: "#F7F6F3", cursor: "pointer", marginBottom: 24,
-        }}>
-          <span style={{ fontSize: 28, color: "#B4B2A9" }}>🎥</span>
-          <span style={{ fontSize: 12, color: "#8C8A82", marginTop: 4 }}>タップして撮影・アップロード</span>
-        </div>
-        <Btn>次へ（Q&A）</Btn>
-      </div>
-    </>
-  );
-}
-
-function ScreenQA({ onNavigate }) {
-  const questions = [
-    "あなたの得意なことは何ですか？",
-    "どんな職場で働きたいですか？",
-    "仕事で大切にしていることは？",
-  ];
-  return (
-    <>
-      <Header title="Q&A" sub="Step 3 / 3" onBack={() => onNavigate("写真/動画")} />
-      <StepIndicator current={2} total={3} />
-      <div style={{ flex: 1, padding: "0 20px 20px", overflow: "auto" }}>
-        <div style={{ fontSize: 13, color: "#5F5E5A", marginBottom: 16 }}>
-          話し言葉でOK！AIが自動で敬語に変換します
-        </div>
-        {questions.map((q, i) => (
-          <div key={i} style={{ marginBottom: 18 }}>
-            <div style={{ fontSize: 13, fontWeight: 700, color: "#1a1a1a", marginBottom: 4 }}>
-              Q{i + 1}. {q}
-              <span style={{ fontSize: 10, color: "#E8593C", fontWeight: 700, marginLeft: 4 }}>必須</span>
-            </div>
-            <div style={{
-              borderRadius: 10, border: "1.5px solid #D3D1C7", padding: 12,
-              minHeight: 64, fontSize: 13, color: "#B4B2A9", background: "#fff",
-            }}>
-              回答を入力...
-            </div>
-            <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 6 }}>
-              <div style={{
-                padding: "4px 10px", borderRadius: 6, fontSize: 11, fontWeight: 600,
-                border: "1px solid #D3D1C7", color: "#5F5E5A", cursor: "pointer", background: "#fff",
-              }}>
-                🎥 動画で回答
-              </div>
-            </div>
+        <div style={{ textAlign: "center", marginBottom: 20, paddingTop: 8 }}>
+          <div style={{ fontSize: 16, fontWeight: 700, color: "#1a1a1a", marginBottom: 4 }}>プロフィール写真を登録</div>
+          <div style={{ fontSize: 12, color: "#5F5E5A", lineHeight: 1.6 }}>
+            写真があると企業からのスカウト率が<br />
+            <span style={{ color: "#E8593C", fontWeight: 700 }}>3倍</span>アップします
           </div>
-        ))}
-        <Btn>回答を送信</Btn>
-      </div>
-    </>
-  );
-}
-
-function ScreenKeigoReview({ onNavigate }) {
-  return (
-    <>
-      <Header title="AI敬語変換確認" onBack={() => onNavigate("Q&A")} accent="#534AB7" />
-      <div style={{ flex: 1, padding: "16px 20px 20px", overflow: "auto" }}>
-        <div style={{
-          background: "#F0EDFE", borderRadius: 12, padding: 14, marginBottom: 16,
-          fontSize: 12, color: "#534AB7", fontWeight: 500, lineHeight: 1.6,
-        }}>
-          AIが話し言葉を敬語に変換しました。内容を確認して、必要に応じて修正してください。
+          <div style={{ fontSize: 11, color: "#E8593C", fontWeight: 600, marginTop: 4 }}>※ 必須項目です</div>
         </div>
-        {[
-          { q: "あなたの得意なことは何ですか？", before: "人と話すのが好きで、すぐ仲良くなれる", after: "人とお話しすることが得意で、初対面の方ともすぐに打ち解けることができます。" },
-          { q: "どんな職場で働きたいですか？", before: "チームで楽しくやれるとこ", after: "チームワークを大切にし、明るい雰囲気の職場で働きたいと考えております。" },
-          { q: "仕事で大切にしていることは？", before: "ちゃんと時間守ること", after: "時間を厳守し、信頼関係を築くことを大切にしております。" },
-        ].map((item, i) => (
-          <div key={i} style={{ marginBottom: 16 }}>
-            <div style={{ fontSize: 12, fontWeight: 700, color: "#3D3D3A", marginBottom: 6 }}>Q{i + 1}. {item.q}</div>
-            <div style={{
-              borderRadius: 8, background: "#F7F6F3", padding: 10,
-              fontSize: 12, color: "#8C8A82", marginBottom: 4, textDecoration: "line-through",
-            }}>{item.before}</div>
-            <div style={{ fontSize: 10, color: "#534AB7", fontWeight: 600, marginBottom: 2 }}>↓ AI変換後</div>
-            <div style={{
-              borderRadius: 8, border: "1.5px solid #AFA9EC", padding: 10,
-              fontSize: 13, color: "#1a1a1a", background: "#fff", lineHeight: 1.6,
-            }}>{item.after}</div>
-            <div style={{ textAlign: "right", marginTop: 4 }}>
-              <span style={{ fontSize: 11, color: "#534AB7", fontWeight: 600, cursor: "pointer" }}>✏️ 修正する</span>
+        <div style={{
+          width: 140, height: 140, borderRadius: 70, border: "2.5px dashed #E8593C",
+          display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+          margin: "0 auto 20px", background: "#FFF3ED", cursor: "pointer",
+        }}>
+          <span style={{ fontSize: 32, color: "#E8593C" }}>+</span>
+          <span style={{ fontSize: 11, color: "#D85A30", fontWeight: 600 }}>写真を追加</span>
+        </div>
+        <div style={{
+          background: "#F7F6F3", borderRadius: 10, padding: 14, marginBottom: 20,
+        }}>
+          <div style={{ fontSize: 12, fontWeight: 600, color: "#3D3D3A", marginBottom: 6 }}>写真のポイント</div>
+          {[
+            "笑顔で明るい印象の写真がベスト",
+            "顔がはっきり見えるものがおすすめ",
+            "加工しすぎない自然な写真が好印象",
+          ].map((text, i) => (
+            <div key={i} style={{ fontSize: 11, color: "#5F5E5A", marginBottom: 3, display: "flex", gap: 4 }}>
+              <span>💡</span>{text}
             </div>
-          </div>
-        ))}
-        <Btn>この内容で登録を完了する</Btn>
+          ))}
+        </div>
+        <Btn>写真を登録して完了</Btn>
       </div>
     </>
   );
@@ -840,11 +1144,14 @@ function ScreenMyPage({ onNavigate }) {
 // ========== MAIN APP ==========
 
 const SCREEN_MAP = {
+  "CSホーム": ScreenCSHome,
+  "CS求人詳細": ScreenCSJobDetail,
+  "会員登録誘導": ScreenSignupPrompt,
   "SMS認証": ScreenSMS,
   "基本情報": ScreenBasicInfo,
-  "写真/動画": ScreenPhoto,
-  "Q&A": ScreenQA,
-  "敬語変換確認": ScreenKeigoReview,
+  "基本Q&A": ScreenBasicQA,
+  "設問Q&A": ScreenClientQA,
+  "写真": ScreenPhoto,
   "登録完了": ScreenComplete,
   "ホーム(フリック)": ScreenFlick,
   "スカウト詳細": ScreenScoutDetail,
@@ -859,8 +1166,8 @@ const SCREEN_MAP = {
 };
 
 export default function JobseekerMock({ onBack }) {
-  const [current, setCurrent] = useState("ホーム(フリック)");
-  const [phase, setPhase] = useState("メイン");
+  const [current, setCurrent] = useState("CSホーム");
+  const [phase, setPhase] = useState("CS(未登録)");
   const ScreenComponent = SCREEN_MAP[current];
 
   return (
@@ -916,4 +1223,3 @@ export default function JobseekerMock({ onBack }) {
     </div>
   );
 }
-
