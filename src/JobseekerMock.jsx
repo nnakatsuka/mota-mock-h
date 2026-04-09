@@ -21,8 +21,8 @@ const SCREENS = [
 
 const PHASES = {
   "CS(未登録)": ["CSホーム", "CS求人詳細", "会員登録誘導"],
-  "登録": ["SMS認証", "基本情報", "基本Q&A", "設問Q&A", "写真", "登録完了"],
-  "メイン": ["ホーム(フリック)", "スカウト詳細", "求人詳細", "AI面談", "面談完了", "スカウト履歴", "日程調整", "新着求人", "やりとり", "マイページ"],
+  "登録": ["SMS認証", "基本情報", "基本Q&A", "設問Q&A", "敬語変換確認", "写真", "登録完了"],
+  "メイン": ["求人詳細", "AI面談", "面談完了", "スカウト履歴", "日程調整", "新着求人", "やりとり", "マイページ"],
 };
 
 // Phone frame wrapper
@@ -210,11 +210,8 @@ function ScreenCSHome({ onNavigate }) {
           display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
           padding: "0 24px", textAlign: "center",
         }}>
-          <div style={{ fontSize: 22, fontWeight: 800, color: "#fff", marginBottom: 6, lineHeight: 1.4 }}>
-            あなたにぴったりの<br />仕事が見つかる
-          </div>
-          <div style={{ fontSize: 12, color: "rgba(255,255,255,0.85)", lineHeight: 1.6 }}>
-            簡単プロフィール登録で企業からスカウトが届く
+          <div style={{ fontSize: 20, fontWeight: 800, color: "#fff", marginBottom: 6, lineHeight: 1.5 }}>
+            履歴書不要！<br />カンタン質問に<br />3問こたえるだけで応募できる！
           </div>
         </div>
 
@@ -435,7 +432,7 @@ function ScreenSMS({ onNavigate }) {
           <div style={{ fontSize: 24, fontWeight: 800, color: "#E8593C", letterSpacing: 2 }}>MOTA</div>
           <div style={{ fontSize: 13, color: "#5F5E5A", marginTop: 4 }}>無料会員登録（3分で完了）</div>
         </div>
-        <StepIndicator current={0} total={4} />
+        <StepIndicator current={0} total={6} />
         <Field label="氏名" placeholder="山田 太郎" required />
         <Field label="電話番号" placeholder="090-0000-0000" required />
         <div style={{ height: 8 }} />
@@ -456,7 +453,7 @@ function ScreenBasicInfo({ onNavigate }) {
   return (
     <>
       <Header title="簡単応募ステップ" onBack={() => onNavigate("SMS認証")} />
-      <StepIndicator current={1} total={4} />
+      <StepIndicator current={1} total={6} />
       <div style={{ flex: 1, padding: "0 20px 20px", overflow: "auto" }}>
         <div style={{
           background: "#EEFBF3", borderRadius: 10, padding: 12, marginBottom: 16,
@@ -488,7 +485,7 @@ function ScreenBasicQA({ onNavigate }) {
   return (
     <>
       <Header title="基本情報" onBack={() => onNavigate("基本情報")} />
-      <StepIndicator current={2} total={5} />
+      <StepIndicator current={2} total={6} />
       <div style={{ flex: 1, padding: "0 20px 20px", overflow: "auto" }}>
         <div style={{ fontSize: 13, color: "#5F5E5A", marginBottom: 14, textAlign: "center" }}>
           あなたについて教えてください
@@ -528,7 +525,7 @@ function ScreenClientQA({ onNavigate }) {
   return (
     <>
       <Header title="設問Q&A" onBack={() => onNavigate("基本Q&A")} />
-      <StepIndicator current={3} total={5} />
+      <StepIndicator current={3} total={6} />
       <div style={{ flex: 1, padding: "0 20px 20px", overflow: "auto" }}>
         {/* キャッチ */}
         <div style={{
@@ -600,11 +597,50 @@ function ScreenClientQA({ onNavigate }) {
   );
 }
 
+function ScreenKeigoReview({ onNavigate }) {
+  return (
+    <>
+      <Header title="AI敬語変換確認" onBack={() => onNavigate("設問Q&A")} accent="#534AB7" />
+      <StepIndicator current={4} total={6} />
+      <div style={{ flex: 1, padding: "16px 20px 20px", overflow: "auto" }}>
+        <div style={{
+          background: "#F0EDFE", borderRadius: 12, padding: 14, marginBottom: 16,
+          fontSize: 12, color: "#534AB7", fontWeight: 500, lineHeight: 1.6,
+        }}>
+          AIが話し言葉を敬語に変換しました。内容を確認して、必要に応じて修正してください。
+        </div>
+        {[
+          { q: "あなたの得意なことは何ですか？", before: "人と話すのが好きで、すぐ仲良くなれる", after: "人とお話しすることが得意で、初対面の方ともすぐに打ち解けることができます。" },
+          { q: "どんな職場で働きたいですか？", before: "チームで楽しくやれるとこ", after: "チームワークを大切にし、明るい雰囲気の職場で働きたいと考えております。" },
+          { q: "仕事で大切にしていることは？", before: "ちゃんと時間守ること", after: "時間を厳守し、信頼関係を築くことを大切にしております。" },
+        ].map((item, i) => (
+          <div key={i} style={{ marginBottom: 16 }}>
+            <div style={{ fontSize: 12, fontWeight: 700, color: "#3D3D3A", marginBottom: 6 }}>Q{i + 1}. {item.q}</div>
+            <div style={{
+              borderRadius: 8, background: "#F7F6F3", padding: 10,
+              fontSize: 12, color: "#8C8A82", marginBottom: 4, textDecoration: "line-through",
+            }}>{item.before}</div>
+            <div style={{ fontSize: 10, color: "#534AB7", fontWeight: 600, marginBottom: 2 }}>↓ AI変換後</div>
+            <div style={{
+              borderRadius: 8, border: "1.5px solid #AFA9EC", padding: 10,
+              fontSize: 13, color: "#1a1a1a", background: "#fff", lineHeight: 1.6,
+            }}>{item.after}</div>
+            <div style={{ textAlign: "right", marginTop: 4 }}>
+              <span style={{ fontSize: 11, color: "#534AB7", fontWeight: 600, cursor: "pointer" }}>✏️ 修正する</span>
+            </div>
+          </div>
+        ))}
+        <Btn>この内容で次へ</Btn>
+      </div>
+    </>
+  );
+}
+
 function ScreenPhoto({ onNavigate }) {
   return (
     <>
-      <Header title="プロフィール写真" onBack={() => onNavigate("設問Q&A")} />
-      <StepIndicator current={4} total={5} />
+      <Header title="プロフィール写真" onBack={() => onNavigate("敬語変換確認")} />
+      <StepIndicator current={5} total={6} />
       <div style={{ flex: 1, padding: "0 20px 20px", overflow: "auto" }}>
         <div style={{ textAlign: "center", marginBottom: 20, paddingTop: 8 }}>
           <div style={{ fontSize: 16, fontWeight: 700, color: "#1a1a1a", marginBottom: 4 }}>プロフィール写真を登録</div>
@@ -1151,6 +1187,7 @@ const SCREEN_MAP = {
   "基本情報": ScreenBasicInfo,
   "基本Q&A": ScreenBasicQA,
   "設問Q&A": ScreenClientQA,
+  "敬語変換確認": ScreenKeigoReview,
   "写真": ScreenPhoto,
   "登録完了": ScreenComplete,
   "ホーム(フリック)": ScreenFlick,
