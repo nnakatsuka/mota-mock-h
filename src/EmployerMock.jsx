@@ -25,17 +25,14 @@ const SCREENS = [
 const PHASES = {
   "登録": ["ログイン", "企業情報登録", "求人情報登録"],
   "ダッシュボード": ["ダッシュボード"],
-  "求職者・スカウト": ["求職者検索", "求職者詳細", "スカウト送信", "スカウト管理(リスト)", "スカウト管理(カンバン)"],
-  "応募・選考": ["応募管理", "応募者詳細", "AI面談結果", "選考日程登録", "選考結果報告"],
+  "スカウト管理": ["スカウト管理(リスト)", "スカウト管理(カンバン)", "求職者詳細", "スカウト送信", "応募者詳細", "AI面談結果", "選考日程登録", "選考結果報告"],
   "メッセージ": ["メッセージ一覧", "チャット画面"],
   "求人・設定": ["求人管理", "求人編集", "設定"],
 };
 
 const NAV_ITEMS = [
   { id: "ダッシュボード", icon: "📊", label: "ダッシュボード" },
-  { id: "求職者検索", icon: "🔍", label: "求職者検索" },
   { id: "スカウト管理(リスト)", icon: "📩", label: "スカウト管理" },
-  { id: "応募管理", icon: "📋", label: "応募管理" },
   { id: "メッセージ一覧", icon: "💬", label: "メッセージ" },
   { id: "求人管理", icon: "📝", label: "求人管理" },
   { id: "設定", icon: "⚙️", label: "設定" },
@@ -367,53 +364,164 @@ function ScreenDashboard({ onNavigate }) {
 
 function ScreenJobseekerSearch({ onNavigate }) {
   return (
-    <div style={{ flex: 1, overflow: "auto", background: "#FAFAF8" }}>
-      <TopBar title="求職者検索">
-        <Btn small>検索条件を保存</Btn>
-      </TopBar>
-      <div style={{ padding: 24 }}>
-        {/* Filter area */}
-        <div style={{ background: "#fff", borderRadius: 12, padding: 20, border: "1px solid #E8E6E1", marginBottom: 20 }}>
-          <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 12 }}>検索条件</div>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 12, marginBottom: 12 }}>
-            <Field label="年齢" placeholder="18〜35歳 ▼" />
-            <Field label="エリア" placeholder="東京都 ▼" />
-            <Field label="学歴" placeholder="指定なし ▼" />
-            <Field label="免許・資格" placeholder="選択 ▼" />
+    <div style={{ flex: 1, overflow: "auto", background: "#f5f5f5" }}>
+      {/* MOTA style header */}
+      <div style={{
+        height: 44, background: "#fff", display: "flex", alignItems: "center",
+        justifyContent: "space-between", padding: "0 20px",
+        borderBottom: "1px solid #ddd",
+      }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <span style={{ fontSize: 18, fontWeight: 800, color: "#1a1a1a", letterSpacing: 1 }}>MOTA</span>
+          <span style={{ fontSize: 12, color: "#888" }}>採用管理</span>
+        </div>
+        <span style={{ fontSize: 12, color: "#888", cursor: "pointer" }}>→ ログアウト</span>
+      </div>
+      {/* Black tab bar */}
+      <div style={{
+        height: 40, background: "#333", display: "flex", alignItems: "center",
+      }}>
+        {["マイページ", "求職者検索", "スカウト管理"].map((t, i) => (
+          <div key={t} style={{
+            flex: 1, textAlign: "center", fontSize: 13, fontWeight: i === 1 ? 700 : 400,
+            color: "#fff", cursor: "pointer",
+            borderBottom: i === 1 ? "2px solid #fff" : "none",
+            padding: "8px 0",
+          }}>{t}</div>
+        ))}
+      </div>
+      {/* Sub tabs */}
+      <div style={{
+        display: "flex", gap: 16, padding: "10px 20px", background: "#fff",
+        borderBottom: "1px solid #ddd",
+      }}>
+        {["スカウト対象", "スカウト済み", "応募者"].map((t, i) => (
+          <span key={t} style={{
+            fontSize: 13, fontWeight: i === 0 ? 700 : 400,
+            color: i === 0 ? "#E8593C" : "#888",
+            borderBottom: i === 0 ? "2px solid #E8593C" : "none",
+            paddingBottom: 6, cursor: "pointer",
+          }}>{t}</span>
+        ))}
+        <div style={{ flex: 1 }} />
+        <span style={{ fontSize: 12, color: "#888" }}>スカウト残数 <strong style={{ color: "#E8593C" }}>147</strong> / 300件</span>
+      </div>
+
+      {/* Main content: left filter + right table */}
+      <div style={{ display: "flex", padding: 0 }}>
+        {/* Left: Filter panel */}
+        <div style={{
+          width: 200, background: "#fff", borderRight: "1px solid #ddd",
+          padding: "14px 16px", flexShrink: 0, fontSize: 12,
+        }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+            <span style={{ fontSize: 14, fontWeight: 700, color: "#1a1a1a" }}>絞り込み</span>
+            <span style={{ color: "#2E6FD4", fontSize: 11, cursor: "pointer" }}>◀ 閉じる</span>
           </div>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 12 }}>
-            <Field label="Q&Aキーワード" placeholder="キーワード入力" />
-            <Field label="動画" placeholder="動画あり ▼" />
-            <Field label="転職意欲" placeholder="指定なし ▼" />
-            <div style={{ display: "flex", alignItems: "flex-end", paddingBottom: 14 }}>
-              <Btn>検索する</Btn>
+          {[
+            { label: "年齢", placeholder: "-" },
+            { label: "エリア", placeholder: "- 入力または選択（複数選可）..." },
+            { label: "最終学歴", placeholder: "-" },
+            { label: "免許・資格", placeholder: "- 入力または選択" },
+            { label: "動画有無", placeholder: "-" },
+            { label: "Q&Aキーワード", placeholder: "キーワード入力" },
+            { label: "転職希望時期", placeholder: "-" },
+          ].map(f => (
+            <div key={f.label} style={{ marginBottom: 10 }}>
+              <div style={{ fontSize: 11, color: "#555", marginBottom: 3 }}>{f.label}</div>
+              <div style={{
+                height: 30, border: "1px solid #ccc", borderRadius: 4,
+                display: "flex", alignItems: "center", padding: "0 8px",
+                fontSize: 11, color: "#aaa", background: "#fff",
+              }}>{f.placeholder}</div>
             </div>
+          ))}
+          <div style={{ marginTop: 8 }}>
+            <Btn small>検索</Btn>
           </div>
         </div>
-        {/* Results */}
-        <div style={{ fontSize: 13, color: "#8C8A82", marginBottom: 10 }}>検索結果: 48件</div>
-        <Table
-          headers={[
-            { label: "", w: "40px" },
-            { label: "氏名", w: "100px" },
-            { label: "年齢", w: "50px" },
-            { label: "エリア", w: "80px" },
-            { label: "学歴" },
-            { label: "動画", w: "50px" },
-            { label: "アクション", w: "120px" },
-          ]}
-          rows={[
-            [<input type="checkbox" />, "田中 太郎", "25", "東京都", "高卒", <Tag color="green">あり</Tag>, <Btn small>詳細</Btn>],
-            [<input type="checkbox" />, "佐藤 花子", "22", "神奈川", "専門卒", <Tag color="green">あり</Tag>, <Btn small>詳細</Btn>],
-            [<input type="checkbox" />, "鈴木 一郎", "28", "東京都", "大卒", <Tag color="gray">なし</Tag>, <Btn small>詳細</Btn>],
-            [<input type="checkbox" />, "高橋 美咲", "20", "千葉県", "高卒", <Tag color="green">あり</Tag>, <Btn small>詳細</Btn>],
-            [<input type="checkbox" />, "渡辺 健太", "31", "埼玉県", "専門卒", <Tag color="gray">なし</Tag>, <Btn small>詳細</Btn>],
-          ]}
-          onRowClick={(i) => onNavigate("求職者詳細")}
-        />
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: 14 }}>
-          <Btn small outline>選択した求職者にスカウト送信（0件）</Btn>
-          <div style={{ fontSize: 12, color: "#8C8A82" }}>1-5 / 48件</div>
+
+        {/* Right: Table */}
+        <div style={{ flex: 1, padding: "12px 16px" }}>
+          {/* Table header controls */}
+          <div style={{
+            display: "flex", justifyContent: "space-between", alignItems: "center",
+            marginBottom: 8,
+          }}>
+            <span style={{ fontSize: 13, color: "#1a1a1a" }}>全 <strong>48</strong> 件</span>
+            <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+              <select style={{ fontSize: 11, padding: "3px 6px", border: "1px solid #ccc", borderRadius: 4 }}>
+                <option>新着順</option>
+              </select>
+              <span style={{ fontSize: 11, color: "#888" }}>表示 30 / 60 / 100件</span>
+            </div>
+          </div>
+          {/* Table */}
+          <div style={{ background: "#fff", border: "1px solid #ddd", borderRadius: 0, overflow: "hidden" }}>
+            {/* Header */}
+            <div style={{
+              display: "grid", gridTemplateColumns: "36px 80px 40px 70px 60px 50px 60px 50px 1fr",
+              background: "#f8f8f8", borderBottom: "1px solid #ddd",
+              fontSize: 11, fontWeight: 600, color: "#555", padding: "8px 0",
+            }}>
+              <div style={{ textAlign: "center" }}><input type="checkbox" /></div>
+              <div>氏名</div>
+              <div>年齢</div>
+              <div>エリア</div>
+              <div>学歴</div>
+              <div>動画</div>
+              <div>資格</div>
+              <div>写真</div>
+              <div>メモ</div>
+            </div>
+            {/* Rows */}
+            {[
+              { name: "田中 太郎", age: "25", area: "東京都", edu: "高卒", video: true, cert: "普免", photo: true },
+              { name: "佐藤 花子", age: "22", area: "神奈川", edu: "専門卒", video: true, cert: "なし", photo: true },
+              { name: "鈴木 一郎", age: "28", area: "東京都", edu: "大卒", video: false, cert: "FP2級", photo: false },
+              { name: "高橋 美咲", age: "20", area: "千葉県", edu: "高卒", video: true, cert: "なし", photo: true },
+              { name: "渡辺 健太", age: "31", area: "埼玉県", edu: "専門卒", video: false, cert: "介護初任者", photo: false },
+              { name: "山本 翔", age: "23", area: "東京都", edu: "高卒", video: true, cert: "普免", photo: true },
+              { name: "木村 結衣", age: "26", area: "神奈川", edu: "大卒", video: true, cert: "なし", photo: true },
+            ].map((r, i) => (
+              <div key={i} onClick={() => onNavigate("求職者詳細")} style={{
+                display: "grid", gridTemplateColumns: "36px 80px 40px 70px 60px 50px 60px 50px 1fr",
+                borderBottom: "1px solid #eee", fontSize: 12, padding: "8px 0",
+                cursor: "pointer", alignItems: "center",
+              }}
+                onMouseEnter={e => { e.currentTarget.style.background = "#fafafa"; }}
+                onMouseLeave={e => { e.currentTarget.style.background = "transparent"; }}
+              >
+                <div style={{ textAlign: "center" }}><input type="checkbox" /></div>
+                <div style={{ color: "#2E6FD4", fontWeight: 500 }}>{r.name}</div>
+                <div>{r.age}</div>
+                <div>{r.area}</div>
+                <div>{r.edu}</div>
+                <div style={{ color: r.video ? "#1D9E75" : "#ccc" }}>{r.video ? "あり" : "なし"}</div>
+                <div style={{ fontSize: 10 }}>{r.cert}</div>
+                <div style={{ color: r.photo ? "#1D9E75" : "#ccc" }}>{r.photo ? "あり" : "なし"}</div>
+                <div>
+                  <input placeholder="メモを入力" style={{
+                    border: "1px solid #ddd", borderRadius: 3, padding: "2px 6px",
+                    fontSize: 10, width: "90%", color: "#555",
+                  }} />
+                </div>
+              </div>
+            ))}
+          </div>
+          {/* Footer actions */}
+          <div style={{
+            display: "flex", justifyContent: "space-between", alignItems: "center",
+            marginTop: 10, padding: "0 4px",
+          }}>
+            <Btn small outline>選択した求職者にスカウト送信（0件）</Btn>
+            <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 11, color: "#888" }}>
+              <span>◀</span>
+              <span style={{ padding: "2px 8px", background: "#E8593C", color: "#fff", borderRadius: 3, fontWeight: 700 }}>1</span>
+              <span style={{ padding: "2px 8px", cursor: "pointer" }}>2</span>
+              <span>▶</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -548,44 +656,309 @@ function ScreenScoutSend({ onNavigate }) {
   );
 }
 
+function ScoutFilterBar({ filterOpen, setFilterOpen }) {
+  if (!filterOpen) return null;
+  return (
+    <div style={{
+      background: "#fff", borderBottom: "1px solid #ddd", padding: "12px 20px",
+      display: "flex", gap: 12, alignItems: "flex-end", flexWrap: "wrap",
+    }}>
+      {[
+        { label: "年齢", placeholder: "-", w: 80 },
+        { label: "エリア", placeholder: "選択", w: 100 },
+        { label: "学歴", placeholder: "-", w: 80 },
+        { label: "免許・資格", placeholder: "選択", w: 100 },
+        { label: "動画有無", placeholder: "-", w: 80 },
+        { label: "MSG", placeholder: "-", w: 60 },
+      ].map(f => (
+        <div key={f.label}>
+          <div style={{ fontSize: 10, color: "#555", marginBottom: 2 }}>{f.label}</div>
+          <div style={{
+            height: 28, width: f.w, border: "1px solid #ccc", borderRadius: 4,
+            display: "flex", alignItems: "center", padding: "0 8px",
+            fontSize: 11, color: "#aaa", background: "#fff",
+          }}>{f.placeholder}</div>
+        </div>
+      ))}
+      <Btn small>検索</Btn>
+      <Btn small outline>条件保存</Btn>
+    </div>
+  );
+}
+
 function ScreenScoutManageList({ onNavigate }) {
+  const [activeStep, setActiveStep] = useState("all");
+  const [filterOpen, setFilterOpen] = useState(false);
+  const steps = [
+    { id: "all", label: "すべて", color: "#1a1a1a" },
+    { id: "s1", label: "Step.1 登録確認", color: "#2E6FD4" },
+    { id: "s2", label: "Step.2 スカウト済", color: "#E8593C" },
+    { id: "s3", label: "Step.3 AI面談", color: "#534AB7" },
+    { id: "s4", label: "Step.4 面接・採用", color: "#1D9E75" },
+  ];
+  const allRows = [
+    { name: "山本 翔", age: 23, area: "東京都", edu: "高卒", cert: "普免", step: "s1", status: "新規登録", msg: false, date: "4/8" },
+    { name: "木村 結衣", age: 26, area: "神奈川", edu: "大卒", cert: "-", step: "s1", status: "新規登録", msg: false, date: "4/7" },
+    { name: "中村 大輝", age: 21, area: "埼玉県", edu: "専門卒", cert: "-", step: "s1", status: "新規登録", msg: false, date: "4/7" },
+    { name: "田中 太郎", age: 25, area: "東京都", edu: "高卒", cert: "普免", step: "s2", status: "既読", msg: true, date: "4/6" },
+    { name: "鈴木 一郎", age: 28, area: "東京都", edu: "大卒", cert: "FP2級", step: "s2", status: "未読", msg: false, date: "4/5" },
+    { name: "佐藤 翠", age: 20, area: "東京都", edu: "高卒", cert: "普免", step: "s3", status: "面談済み", msg: true, date: "4/5" },
+    { name: "高橋 美咲", age: 20, area: "千葉県", edu: "高卒", cert: "-", step: "s4", status: "面接確定", msg: true, date: "4/3" },
+    { name: "渡辺 健太", age: 31, area: "埼玉県", edu: "専門卒", cert: "介護初任者", step: "s2", status: "辞退", msg: false, date: "4/2" },
+  ];
+  const filteredRows = activeStep === "all" ? allRows : allRows.filter(r => r.step === activeStep);
+  const stepColors = { s1: "#2E6FD4", s2: "#E8593C", s3: "#534AB7", s4: "#1D9E75" };
+  const stepLabels = { s1: "登録確認", s2: "スカウト済", s3: "AI面談", s4: "面接・採用" };
+  const statusColors = {
+    "新規登録": { bg: "#EDF4FF", text: "#2E6FD4" },
+    "未読": { bg: "#F1EFE8", text: "#888" },
+    "既読": { bg: "#EDF4FF", text: "#2E6FD4" },
+    "面談済み": { bg: "#F0EDFE", text: "#534AB7" },
+    "面接確定": { bg: "#EEFBF3", text: "#1D9E75" },
+    "辞退": { bg: "#FCEBEB", text: "#A32D2D" },
+  };
+
   return (
     <div style={{ flex: 1, overflow: "auto", background: "#FAFAF8" }}>
       <TopBar title="スカウト管理">
+        <span style={{ fontSize: 11, color: "#888" }}>スカウト残数 <strong style={{ color: "#E8593C" }}>147</strong> / 300</span>
         <div style={{ display: "flex", gap: 4, background: "#F1EFE8", borderRadius: 8, padding: 2 }}>
-          <div style={{ padding: "4px 12px", borderRadius: 6, background: "#fff", fontSize: 12, fontWeight: 600, cursor: "pointer" }}>リスト</div>
-          <div onClick={() => onNavigate("スカウト管理(カンバン)")} style={{ padding: "4px 12px", borderRadius: 6, fontSize: 12, color: "#8C8A82", cursor: "pointer" }}>カンバン</div>
+          <div style={{ padding: "4px 14px", borderRadius: 6, background: "#fff", fontSize: 12, fontWeight: 600 }}>リスト</div>
+          <div onClick={() => onNavigate("スカウト管理(カンバン)")} style={{ padding: "4px 14px", borderRadius: 6, fontSize: 12, color: "#8C8A82", cursor: "pointer" }}>カンバン</div>
         </div>
+        <div onClick={() => setFilterOpen(!filterOpen)} style={{
+          padding: "4px 12px", borderRadius: 6, fontSize: 12, cursor: "pointer",
+          background: filterOpen ? "#1a1a1a" : "#F1EFE8", color: filterOpen ? "#fff" : "#5F5E5A",
+          fontWeight: 600,
+        }}>{filterOpen ? "▲ 絞り込みを閉じる" : "▼ 絞り込み"}</div>
       </TopBar>
-      <div style={{ padding: 24 }}>
-        <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
-          {["すべて", "未読", "既読", "応諾", "面談済み", "面接待ち", "辞退"].map((f, i) => (
-            <span key={f} style={{
-              padding: "5px 14px", borderRadius: 20, fontSize: 12, fontWeight: i === 0 ? 600 : 400,
-              background: i === 0 ? "#1A1A1A" : "#fff", color: i === 0 ? "#fff" : "#5F5E5A",
-              border: i === 0 ? "none" : "1px solid #E8E6E1", cursor: "pointer",
-            }}>{f}</span>
-          ))}
+      <ScoutFilterBar filterOpen={filterOpen} setFilterOpen={setFilterOpen} />
+      <div style={{ padding: "12px 20px" }}>
+        {/* Step tabs */}
+        <div style={{ display: "flex", gap: 0, marginBottom: 12, borderBottom: "2px solid #e0e0e0" }}>
+          {steps.map(s => {
+            const count = s.id === "all" ? allRows.length : allRows.filter(r => r.step === s.id).length;
+            return (
+              <div key={s.id} onClick={() => setActiveStep(s.id)} style={{
+                padding: "8px 14px", fontSize: 12, cursor: "pointer",
+                fontWeight: activeStep === s.id ? 700 : 400,
+                color: activeStep === s.id ? s.color : "#888",
+                borderBottom: activeStep === s.id ? `2px solid ${s.color}` : "2px solid transparent",
+                marginBottom: -2, whiteSpace: "nowrap",
+              }}>
+                {s.label} <span style={{
+                  fontSize: 10, background: activeStep === s.id ? s.color : "#e0e0e0",
+                  color: activeStep === s.id ? "#fff" : "#888",
+                  padding: "1px 6px", borderRadius: 8, marginLeft: 4,
+                }}>{count}</span>
+              </div>
+            );
+          })}
         </div>
-        <Table
-          headers={[
-            { label: "氏名", w: "100px" },
-            { label: "年齢", w: "50px" },
-            { label: "エリア", w: "80px" },
-            { label: "送信日", w: "90px" },
-            { label: "ステータス", w: "100px" },
-            { label: "最終更新", w: "90px" },
-            { label: "アクション", w: "80px" },
-          ]}
-          rows={[
-            ["田中 太郎", "25", "東京都", "4/5", <Tag color="green">応諾</Tag>, "4/6", <Btn small>詳細</Btn>],
-            ["佐藤 花子", "22", "神奈川", "4/4", <Tag color="purple">面談済み</Tag>, "4/5", <Btn small>詳細</Btn>],
-            ["鈴木 一郎", "28", "東京都", "4/3", <Tag color="blue">既読</Tag>, "4/4", <Btn small>詳細</Btn>],
-            ["高橋 美咲", "20", "千葉県", "4/3", <Tag color="orange">面接待ち</Tag>, "4/6", <Btn small>詳細</Btn>],
-            ["渡辺 健太", "31", "埼玉県", "4/2", <Tag color="gray">辞退</Tag>, "4/3", <Btn small>詳細</Btn>],
-          ]}
-          onRowClick={() => onNavigate("応募者詳細")}
-        />
+        {/* Bulk action */}
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+          <Btn small outline>選択した求職者にスカウト送信</Btn>
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <span style={{ fontSize: 12, color: "#888" }}>{filteredRows.length}件</span>
+            <select style={{ fontSize: 11, padding: "3px 6px", border: "1px solid #ccc", borderRadius: 4 }}>
+              <option>新着順</option>
+            </select>
+          </div>
+        </div>
+        {/* Table */}
+        <div style={{ background: "#fff", border: "1px solid #E8E6E1", borderRadius: 8, overflow: "hidden" }}>
+          <div style={{
+            display: "grid", gridTemplateColumns: "30px 80px 36px 65px 55px 65px 75px 60px 36px 1fr",
+            background: "#F7F6F3", borderBottom: "1px solid #E8E6E1",
+            fontSize: 10, fontWeight: 600, color: "#5F5E5A", padding: "8px 0",
+          }}>
+            <div style={{ textAlign: "center" }}><input type="checkbox" /></div>
+            <div>氏名</div>
+            <div>年齢</div>
+            <div>エリア</div>
+            <div>学歴</div>
+            <div>資格</div>
+            <div>ステップ</div>
+            <div>ステータス</div>
+            <div>MSG</div>
+            <div>メモ</div>
+          </div>
+          {filteredRows.map((r, i) => {
+            const sc = statusColors[r.status] || { bg: "#f0f0f0", text: "#888" };
+            return (
+              <div key={i} onClick={() => onNavigate("応募者詳細")} style={{
+                display: "grid", gridTemplateColumns: "30px 80px 36px 65px 55px 65px 75px 60px 36px 1fr",
+                borderBottom: "1px solid #F1EFE8", fontSize: 12, padding: "8px 0",
+                cursor: "pointer", alignItems: "center",
+              }}
+                onMouseEnter={e => { e.currentTarget.style.background = "#FAFAF8"; }}
+                onMouseLeave={e => { e.currentTarget.style.background = "transparent"; }}
+              >
+                <div style={{ textAlign: "center" }}><input type="checkbox" onClick={e => e.stopPropagation()} /></div>
+                <div style={{ color: "#2E6FD4", fontWeight: 600 }}>{r.name}</div>
+                <div>{r.age}</div>
+                <div>{r.area}</div>
+                <div>{r.edu}</div>
+                <div style={{ fontSize: 10 }}>{r.cert}</div>
+                <div><span style={{
+                  fontSize: 9, padding: "2px 6px", borderRadius: 3,
+                  background: stepColors[r.step] + "15", color: stepColors[r.step], fontWeight: 600,
+                }}>{stepLabels[r.step]}</span></div>
+                <div><span style={{
+                  fontSize: 9, padding: "2px 5px", borderRadius: 3,
+                  background: sc.bg, color: sc.text, fontWeight: 600,
+                }}>{r.status}</span></div>
+                <div style={{ textAlign: "center" }}>
+                  {r.msg ? <span style={{ fontSize: 10, color: "#E8593C", fontWeight: 700 }}>●</span> : <span style={{ fontSize: 10, color: "#ddd" }}>-</span>}
+                </div>
+                <div>
+                  <input placeholder="メモ" onClick={e => e.stopPropagation()} style={{
+                    border: "1px solid #E8E6E1", borderRadius: 4, padding: "2px 6px",
+                    fontSize: 10, width: "90%", color: "#555",
+                  }} />
+                </div>
+              </div>
+            );
+          })}
+        </div>
+        <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 8 }}>
+          <div style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 11, color: "#888" }}>
+            <span>◀</span>
+            <span style={{ padding: "2px 8px", background: "#E8593C", color: "#fff", borderRadius: 3, fontWeight: 700 }}>1</span>
+            <span>▶</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function KanbanCard({ item, step, onNavigate }) {
+  const [mediaMode, setMediaMode] = useState("photo");
+  return (
+    <div onClick={() => onNavigate("応募者詳細")} style={{
+      background: "#fff", borderRadius: 10, overflow: "hidden",
+      border: "1px solid #e0e0e0", cursor: "pointer",
+      transition: "box-shadow 0.15s",
+    }}
+      onMouseEnter={e => { e.currentTarget.style.boxShadow = "0 3px 12px rgba(0,0,0,0.1)"; }}
+      onMouseLeave={e => { e.currentTarget.style.boxShadow = "none"; }}
+    >
+      {/* Photo / Video area */}
+      <div style={{ position: "relative" }}>
+        <div style={{
+          height: 140, background: mediaMode === "photo"
+            ? `linear-gradient(135deg, ${item.photoColor || "#5a7a9a"}, ${item.photoColor2 || "#8ab4d4"})`
+            : "#1a1a1a",
+          display: "flex", alignItems: "center", justifyContent: "center",
+        }}>
+          {mediaMode === "photo" ? (
+            <div style={{
+              width: 80, height: 80, borderRadius: 40, background: "rgba(255,255,255,0.3)",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              fontSize: 28, color: "#fff", fontWeight: 800,
+            }}>{item.name[0]}</div>
+          ) : (
+            <div style={{
+              width: 44, height: 44, borderRadius: 22, background: "rgba(255,255,255,0.2)",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              fontSize: 18, color: "#fff",
+            }}>▶</div>
+          )}
+        </div>
+        {/* Area badge */}
+        <div style={{
+          position: "absolute", top: 8, left: 8,
+          background: "#E8593C", color: "#fff", fontSize: 10, fontWeight: 700,
+          padding: "2px 8px", borderRadius: 4,
+        }}>{item.area}</div>
+        {/* Photo/Video toggle */}
+        {item.video && (
+          <div style={{
+            position: "absolute", top: 8, right: 8,
+            display: "flex", background: "rgba(0,0,0,0.5)", borderRadius: 12, overflow: "hidden",
+          }}>
+            <div onClick={e => { e.stopPropagation(); setMediaMode("photo"); }} style={{
+              padding: "3px 10px", fontSize: 10, fontWeight: 600, cursor: "pointer",
+              background: mediaMode === "photo" ? "#fff" : "transparent",
+              color: mediaMode === "photo" ? "#1a1a1a" : "#fff",
+            }}>写真</div>
+            <div onClick={e => { e.stopPropagation(); setMediaMode("video"); }} style={{
+              padding: "3px 10px", fontSize: 10, fontWeight: 600, cursor: "pointer",
+              background: mediaMode === "video" ? "#fff" : "transparent",
+              color: mediaMode === "video" ? "#1a1a1a" : "#fff",
+            }}>動画</div>
+          </div>
+        )}
+      </div>
+      {/* Profile info */}
+      <div style={{ padding: "10px 12px" }}>
+        <div style={{ textAlign: "center", marginBottom: 6 }}>
+          <div style={{ fontSize: 14, fontWeight: 800, color: "#1a1a1a" }}>
+            {item.name}（{item.age}）
+          </div>
+          <div style={{ fontSize: 10, color: "#aaa" }}>{item.kana}</div>
+        </div>
+        <div style={{ fontSize: 11, color: "#555", textAlign: "center", marginBottom: 8, lineHeight: 1.5 }}>
+          {item.cert && <div>{item.cert}</div>}
+          <div>{item.edu}</div>
+        </div>
+        {/* Q&A answers */}
+        {item.qa && item.qa.map((q, qi) => (
+          <div key={qi} style={{ marginBottom: 6 }}>
+            <div style={{
+              display: "flex", alignItems: "center", gap: 4, marginBottom: 2,
+            }}>
+              <span style={{
+                fontSize: 10, fontWeight: 800, color: "#fff", background: "#333",
+                padding: "1px 6px", borderRadius: 3,
+              }}>Q{qi + 1}</span>
+              <span style={{ fontSize: 10, fontWeight: 700, color: "#1a1a1a" }}>{q.q}</span>
+            </div>
+            <div style={{
+              fontSize: 10, color: "#555", lineHeight: 1.5,
+              background: "#f8f8f8", borderRadius: 4, padding: "4px 8px",
+            }}>{q.a}</div>
+          </div>
+        ))}
+        {/* Status badges */}
+        <div style={{ display: "flex", gap: 4, flexWrap: "wrap", marginTop: 6 }}>
+          {item.status && <span style={{
+            fontSize: 9, padding: "2px 6px", borderRadius: 4,
+            background: item.status === "既読" ? "#EDF4FF" : "#F1EFE8",
+            color: item.status === "既読" ? "#2E6FD4" : "#888", fontWeight: 600,
+          }}>{item.status}</span>}
+          {item.score && <span style={{
+            fontSize: 9, padding: "2px 6px", borderRadius: 4,
+            background: "#F0EDFE", color: "#534AB7", fontWeight: 600,
+          }}>AI評価 {item.score}</span>}
+          {item.interview && <span style={{
+            fontSize: 9, padding: "2px 6px", borderRadius: 4,
+            background: "#EEFBF3", color: "#1D9E75", fontWeight: 600,
+          }}>面接 {item.interview}</span>}
+        </div>
+        {/* Action button */}
+        {step === "Step.1" && (
+          <div style={{
+            marginTop: 8, padding: "6px 0", textAlign: "center",
+            background: "#E8593C", color: "#fff", borderRadius: 5,
+            fontSize: 11, fontWeight: 700,
+          }}>ワンクリックスカウト</div>
+        )}
+        {step === "Step.3" && (
+          <div style={{
+            marginTop: 8, padding: "6px 0", textAlign: "center",
+            background: "#534AB7", color: "#fff", borderRadius: 5,
+            fontSize: 11, fontWeight: 700,
+          }}>AI面談結果を見る</div>
+        )}
+        {step === "Step.4" && (
+          <div style={{
+            marginTop: 8, padding: "6px 0", textAlign: "center",
+            background: "#1D9E75", color: "#fff", borderRadius: 5,
+            fontSize: 11, fontWeight: 700,
+          }}>選考結果を報告</div>
+        )}
       </div>
     </div>
   );
@@ -593,49 +966,105 @@ function ScreenScoutManageList({ onNavigate }) {
 
 function ScreenScoutManageKanban({ onNavigate }) {
   const cols = [
-    { title: "未読", color: "#B4B2A9", items: [{ name: "山本 翔", age: 23 }] },
-    { title: "既読", color: "#2E6FD4", items: [{ name: "鈴木 一郎", age: 28 }] },
-    { title: "応諾", color: "#1D9E75", items: [{ name: "田中 太郎", age: 25 }] },
-    { title: "面談済み", color: "#534AB7", items: [{ name: "佐藤 花子", age: 22 }] },
-    { title: "面接待ち", color: "#E8593C", items: [{ name: "高橋 美咲", age: 20 }] },
-    { title: "採用", color: "#1D9E75", items: [] },
+    {
+      step: "Step.1", title: "登録情報確認", sub: "求職者情報を一覧で確認",
+      color: "#2E6FD4", bgColor: "#EDF4FF",
+      items: [
+        { name: "山本 翔", kana: "ヤマモト ショウ", age: 23, area: "東京都 世田谷区", edu: "東京都立 青山高等学校 卒", cert: "普通自動車免許あり", video: true, photo: true, photoColor: "#4a6a8a", photoColor2: "#7aa4c4", qa: [
+          { q: "学生時代、時間を忘れて取組んだものは？", a: "バレー部。レギュラーではなかったけど、練習は毎日欠かさず参加した。" },
+          { q: "これまでの仕事経験は？", a: "カフェで接客を半年。引越し会社は正社員で事務を3年くらいやっていた。" },
+          { q: "仕事においての特技は？", a: "事務でパソコンをやっていたので、そこそこできる。入力も早い方だと思う。" },
+        ]},
+        { name: "木村 結衣", kana: "キムラ ユイ", age: 26, area: "神奈川県 横浜市", edu: "日本大学 文学部 卒", cert: null, video: true, photo: true, photoColor: "#8a5a6a", photoColor2: "#c48a9a", qa: [
+          { q: "学生時代、時間を忘れて取組んだものは？", a: "アルバイト先の居酒屋で接客にハマった。常連さんと話すのが楽しかった。" },
+          { q: "これまでの仕事経験は？", a: "アパレル販売を4年。店長補佐もやっていた。" },
+          { q: "仕事においての特技は？", a: "人の顔と名前を覚えるのが早い。" },
+        ]},
+      ],
+    },
+    {
+      step: "Step.2", title: "スカウト送信済", sub: "ワンクリックでスカウト送信",
+      color: "#E8593C", bgColor: "#FFF3ED",
+      items: [
+        { name: "田中 太郎", kana: "タナカ タロウ", age: 25, area: "東京都 新宿区", edu: "東京都立 新宿高等学校 卒", cert: "普通自動車免許あり", video: true, photo: true, photoColor: "#5a6a4a", photoColor2: "#8a9a7a", status: "既読", qa: [
+          { q: "学生時代、時間を忘れて取組んだものは？", a: "サッカー部。3年間ずっとベンチだったけど最後の大会でスタメンに入れた。" },
+          { q: "これまでの仕事経験は？", a: "飲食店のホールを2年と、工場の仕分けを半年。" },
+          { q: "仕事においての特技は？", a: "体力には自信がある。あと朝起きるのが得意。" },
+        ]},
+      ],
+    },
+    {
+      step: "Step.3", title: "AI面談", sub: "カジュアル面談で質を見極め",
+      color: "#534AB7", bgColor: "#F0EDFE",
+      items: [
+        { name: "佐藤 翠", kana: "サトウ ミドリ", age: 20, area: "東京都 世田谷区", edu: "東京都立 青山高等学校 卒", cert: "普通自動車免許あり", video: true, photo: true, photoColor: "#4a5a8a", photoColor2: "#7a8ac4", score: "4.2", qa: [
+          { q: "学生時代、時間を忘れて取組んだものは？", a: "バレー部。レギュラーではなかったけど、練習は毎日欠かさず参加した。" },
+          { q: "これまでの仕事経験は？", a: "カフェで接客を半年。引越し会社は正社員で事務を3年くらいやっていた。" },
+          { q: "仕事においての特技は？", a: "事務でパソコンをやっていたので、そこそこできる。入力も早い方だと思う。" },
+        ]},
+      ],
+    },
+    {
+      step: "Step.4", title: "面接・採用", sub: "従来通りの面接で内定・採用へ",
+      color: "#1D9E75", bgColor: "#EEFBF3",
+      items: [
+        { name: "高橋 美咲", kana: "タカハシ ミサキ", age: 20, area: "千葉県 船橋市", edu: "千葉県立 船橋高等学校 卒", cert: null, video: true, photo: true, photoColor: "#6a5a3a", photoColor2: "#a48a6a", interview: "4/14 10:00", qa: [
+          { q: "学生時代、時間を忘れて取組んだものは？", a: "ダンス部。大会に向けて毎日練習していた。" },
+          { q: "これまでの仕事経験は？", a: "コンビニバイト2年。レジと品出しが中心。" },
+          { q: "仕事においての特技は？", a: "明るく元気に挨拶できる。声が通ると言われる。" },
+        ]},
+      ],
+    },
   ];
+  const [filterOpen, setFilterOpen] = useState(false);
   return (
     <div style={{ flex: 1, overflow: "auto", background: "#FAFAF8" }}>
       <TopBar title="スカウト管理">
+        <span style={{ fontSize: 11, color: "#888" }}>スカウト残数 <strong style={{ color: "#E8593C" }}>147</strong> / 300</span>
         <div style={{ display: "flex", gap: 4, background: "#F1EFE8", borderRadius: 8, padding: 2 }}>
-          <div onClick={() => onNavigate("スカウト管理(リスト)")} style={{ padding: "4px 12px", borderRadius: 6, fontSize: 12, color: "#8C8A82", cursor: "pointer" }}>リスト</div>
-          <div style={{ padding: "4px 12px", borderRadius: 6, background: "#fff", fontSize: 12, fontWeight: 600, cursor: "pointer" }}>カンバン</div>
+          <div onClick={() => onNavigate("スカウト管理(リスト)")} style={{ padding: "4px 14px", borderRadius: 6, fontSize: 12, color: "#8C8A82", cursor: "pointer" }}>リスト</div>
+          <div style={{ padding: "4px 14px", borderRadius: 6, background: "#fff", fontSize: 12, fontWeight: 600 }}>カンバン</div>
         </div>
+        <div onClick={() => setFilterOpen(!filterOpen)} style={{
+          padding: "4px 12px", borderRadius: 6, fontSize: 12, cursor: "pointer",
+          background: filterOpen ? "#1a1a1a" : "#F1EFE8", color: filterOpen ? "#fff" : "#5F5E5A",
+          fontWeight: 600,
+        }}>{filterOpen ? "▲ 絞り込みを閉じる" : "▼ 絞り込み"}</div>
       </TopBar>
-      <div style={{ padding: 24, display: "flex", gap: 14, overflowX: "auto" }}>
+      <ScoutFilterBar filterOpen={filterOpen} setFilterOpen={setFilterOpen} />
+
+      {/* Kanban 4 columns */}
+      <div style={{ display: "flex", gap: 12, padding: "16px 12px", overflowX: "auto", alignItems: "flex-start" }}>
         {cols.map(col => (
-          <div key={col.title} style={{ width: 200, flexShrink: 0 }}>
+          <div key={col.step} style={{ flex: 1, minWidth: 240 }}>
+            {/* Column header */}
             <div style={{
-              display: "flex", alignItems: "center", gap: 6, marginBottom: 10,
-              padding: "0 4px",
+              background: col.bgColor, borderRadius: "8px 8px 0 0",
+              padding: "10px 14px", borderBottom: `2px solid ${col.color}`,
             }}>
-              <div style={{ width: 8, height: 8, borderRadius: 4, background: col.color }} />
-              <span style={{ fontSize: 13, fontWeight: 700 }}>{col.title}</span>
-              <span style={{ fontSize: 11, color: "#B4B2A9" }}>{col.items.length}</span>
+              <div style={{ fontSize: 11, fontWeight: 800, color: col.color, letterSpacing: 1, marginBottom: 2 }}>{col.step}</div>
+              <div style={{ fontSize: 14, fontWeight: 700, color: "#1a1a1a" }}>{col.title}</div>
+              <div style={{ fontSize: 10, color: "#888", marginTop: 2 }}>{col.sub}</div>
+              <div style={{
+                display: "inline-block", marginTop: 6, fontSize: 11, fontWeight: 700,
+                color: col.color, background: "#fff", padding: "2px 8px", borderRadius: 10,
+              }}>{col.items.length}件</div>
             </div>
-            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+            {/* Cards */}
+            <div style={{
+              background: "#f0f0f0", borderRadius: "0 0 8px 8px",
+              padding: 8, display: "flex", flexDirection: "column", gap: 10,
+              border: "1px solid #e0e0e0", borderTop: "none", minHeight: 100,
+            }}>
               {col.items.map((item, i) => (
-                <div key={i} onClick={() => onNavigate("応募者詳細")} style={{
-                  background: "#fff", borderRadius: 10, padding: 14,
-                  border: "1px solid #E8E6E1", cursor: "pointer",
-                  boxShadow: "0 1px 3px rgba(0,0,0,0.04)",
-                }}>
-                  <div style={{ fontSize: 13, fontWeight: 600 }}>{item.name}</div>
-                  <div style={{ fontSize: 11, color: "#8C8A82" }}>{item.age}歳</div>
-                </div>
+                <KanbanCard key={i} item={item} step={col.step} onNavigate={onNavigate} />
               ))}
               {col.items.length === 0 && (
                 <div style={{
-                  height: 60, borderRadius: 10, border: "1px dashed #D3D1C7",
+                  height: 80, borderRadius: 8, border: "1px dashed #ddd",
                   display: "flex", alignItems: "center", justifyContent: "center",
-                  fontSize: 11, color: "#B4B2A9",
-                }}>なし</div>
+                  fontSize: 11, color: "#bbb",
+                }}>該当者なし</div>
               )}
             </div>
           </div>
@@ -1237,4 +1666,3 @@ export default function EmployerMock({ onBack }) {
     </div>
   );
 }
-
