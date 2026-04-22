@@ -24,7 +24,7 @@ function Sidebar({ active, onNavigate }) {
   return (
     <div style={{ width: 200, background: "#1A1A1A", color: "#fff", display: "flex", flexDirection: "column", flexShrink: 0 }}>
       <div style={{ height: 56, display: "flex", alignItems: "center", padding: "0 20px", borderBottom: "1px solid #2C2C2A" }}>
-        <span style={{ fontSize: 20, fontWeight: 800, color: "#E8593C", letterSpacing: 2 }}>MOTA</span>
+        <span style={{ fontSize: 20, fontWeight: 800, color: "#E8593C", letterSpacing: 2 }}>タップミー</span>
         <span style={{ fontSize: 10, color: "#888", marginLeft: 6 }}>管理画面</span>
       </div>
       <div style={{ flex: 1, paddingTop: 8 }}>
@@ -92,7 +92,7 @@ function ScreenLogin({ onNavigate }) {
   return (
     <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", background: "linear-gradient(135deg,#FAFAF8,#F0EFEB)" }}>
       <div style={{ width: 400, background: "#fff", borderRadius: 16, padding: 40, boxShadow: "0 8px 32px rgba(0,0,0,0.08)", border: "1px solid #E8E6E1" }}>
-        <div style={{ textAlign: "center", marginBottom: 32 }}><div style={{ fontSize: 32, fontWeight: 800, color: "#E8593C" }}>MOTA</div><div style={{ fontSize: 13, color: "#8C8A82", marginTop: 4 }}>企業管理画面</div></div>
+        <div style={{ textAlign: "center", marginBottom: 32 }}><div style={{ fontSize: 32, fontWeight: 800, color: "#E8593C" }}>タップミー</div><div style={{ fontSize: 13, color: "#8C8A82", marginTop: 4 }}>企業管理画面</div></div>
         <Field label="メールアドレス" placeholder="admin@example.com" required /><Field label="パスワード" placeholder="••••••••" required />
         <div style={{ marginTop: 8 }}><Btn>ログイン</Btn></div>
       </div>
@@ -196,7 +196,7 @@ function ScreenSearchList({ onNavigate }) {
             <div onClick={() => setCheckedNames(checkedNames.length === rows.length ? [] : rows.map(r => r.n))} style={{ width: 20, height: 20, borderRadius: 4, background: checkedNames.length === rows.length ? "#E8593C" : "#fff", border: "1.5px solid #ccc", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, color: "#fff", fontWeight: 800, cursor: "pointer" }}>{checkedNames.length === rows.length ? "✓" : ""}</div>
             <span style={{ fontSize: 12, color: "#2E6FD4", fontWeight: 600 }}>{checkedNames.length}件選択中</span>
           </div>
-          <Btn small disabled={checkedNames.length === 0}>一括スカウト送信（{checkedNames.length}件）</Btn>
+          <Btn small disabled={checkedNames.length === 0}>一括スカウト返信（{checkedNames.length}件）</Btn>
         </div>
         <div style={{ background: "#fff", border: "1px solid #E8E6E1", borderRadius: 8, overflow: "hidden" }}>
           <div style={{ display: "grid", gridTemplateColumns: "30px 55px 80px 36px 60px 50px 55px 1fr 80px", background: "#F7F6F3", borderBottom: "1px solid #E8E6E1", fontSize: 10, fontWeight: 600, color: "#5F5E5A", padding: "8px 0" }}>
@@ -209,7 +209,8 @@ function ScreenSearchList({ onNavigate }) {
               <div style={{ color: "#2E6FD4", fontWeight: 600 }}>{r.n}</div><div>{r.age}</div><div>{r.area}</div><div>{r.edu}</div><div style={{ fontSize: 10 }}>{r.cert}</div>
               <div><input placeholder="メモ" style={{ border: "1px solid #E8E6E1", borderRadius: 4, padding: "2px 6px", fontSize: 10, width: "90%", color: "#555" }} /></div>
               <div style={{ display: "flex", gap: 3 }}>
-                <div style={{ padding: "3px 8px", borderRadius: 3, background: "#E8593C", color: "#fff", fontSize: 8, fontWeight: 700, cursor: "pointer" }}>スカウト送信</div>
+                <div style={{ padding: "3px 8px", borderRadius: 3, background: "#E8593C", color: "#fff", fontSize: 8, fontWeight: 700, cursor: "pointer" }}>スカウト返信</div>
+                <div style={{ padding: "3px 8px", borderRadius: 3, background: "#F1EFE8", color: "#888", fontSize: 8, fontWeight: 600, cursor: "pointer" }}>見送り</div>
               </div>
             </div>
           ))}
@@ -224,11 +225,11 @@ function ScreenSearchCard({ onNavigate }) {
   const [filterOpen, setFilterOpen] = useState(false);
   const [checkedNames, setCheckedNames] = useState([]);
   const toggleCheck = (name) => setCheckedNames(prev => prev.includes(name) ? prev.filter(n => n !== name) : [...prev, name]);
-  const qa1 = [{ q: "時間を忘れて取組んだものは？", a: "バレー部。毎日練習に参加した。" }, { q: "仕事経験は？", a: "カフェ接客半年、引越し事務3年。" }, { q: "特技は？", a: "パソコン入力が早い。" }];
+  const qa1 = [{ q: "時間を忘れて取組んだものは？", a: "バレー部に所属し、毎日練習に参加しておりました。" }, { q: "仕事経験は？", a: "カフェでの接客を半年、引越し会社にて事務を3年間経験いたしました。" }, { q: "特技は？", a: "パソコン入力速度には自信がございます。" }];
   const allItems = [
     { name: "山本 翔", kana: "ヤマモト ショウ", age: 23, area: "東京都世田谷区", edu: "青山高校 卒", cert: "普通自動車免許", video: true, pc1: "#4a6a8a", pc2: "#7aa4c4", qa: qa1, route: "スカウト" },
-    { name: "木村 結衣", kana: "キムラ ユイ", age: 26, area: "神奈川県横浜市", edu: "日本大学 卒", cert: null, video: true, pc1: "#8a5a6a", pc2: "#c48a9a", qa: [{ q: "取組んだものは？", a: "居酒屋バイトで接客にハマった。" }, { q: "仕事経験は？", a: "アパレル販売4年。" }, { q: "特技は？", a: "人の顔と名前を覚えるのが早い。" }], route: "応募" },
-    { name: "中村 大輝", kana: "ナカムラ ダイキ", age: 21, area: "埼玉県さいたま市", edu: "埼玉工業高校 卒", cert: null, video: false, pc1: "#5a7a5a", pc2: "#8aaa8a", qa: [{ q: "取組んだものは？", a: "野球部。3年間続けた。" }, { q: "仕事経験は？", a: "工場で軽作業1年。" }, { q: "特技は？", a: "体力に自信がある。" }], route: "スカウト" },
+    { name: "木村 結衣", kana: "キムラ ユイ", age: 26, area: "神奈川県横浜市", edu: "日本大学 卒", cert: null, video: true, pc1: "#8a5a6a", pc2: "#c48a9a", qa: [{ q: "取組んだものは？", a: "居酒屋でのアルバイトを通じて接客の楽しさを学びました。" }, { q: "仕事経験は？", a: "アパレル販売を4年間経験いたしました。" }, { q: "特技は？", a: "お客様のお顔とお名前を覚えることが得意でございます。" }], route: "応募" },
+    { name: "中村 大輝", kana: "ナカムラ ダイキ", age: 21, area: "埼玉県さいたま市", edu: "埼玉工業高校 卒", cert: null, video: false, pc1: "#5a7a5a", pc2: "#8aaa8a", qa: [{ q: "取組んだものは？", a: "野球部に3年間所属し、継続して取り組んでまいりました。" }, { q: "仕事経験は？", a: "工場にて軽作業を1年間経験いたしました。" }, { q: "特技は？", a: "体力には自信がございます。" }], route: "スカウト" },
   ];
   const genScoutMsg = (qa, name) => {
     if (!qa || qa.length < 3) return "";
@@ -251,7 +252,7 @@ function ScreenSearchCard({ onNavigate }) {
             <div onClick={() => setCheckedNames(checkedNames.length === allItems.length ? [] : allItems.map(i => i.name))} style={{ width: 20, height: 20, borderRadius: 4, background: checkedNames.length === allItems.length ? "#E8593C" : "#fff", border: "1.5px solid #ccc", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, color: "#fff", fontWeight: 800, cursor: "pointer" }}>{checkedNames.length === allItems.length ? "✓" : ""}</div>
             <span style={{ fontSize: 12, color: "#2E6FD4", fontWeight: 600 }}>{checkedNames.length}件選択中</span>
           </div>
-          <Btn small disabled={checkedNames.length === 0}>一括スカウト送信（{checkedNames.length}件）</Btn>
+          <Btn small disabled={checkedNames.length === 0}>一括スカウト返信（{checkedNames.length}件）</Btn>
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 14 }}>
           {allItems.map((item, i) => <SearchCard key={i} item={item} genScoutMsg={genScoutMsg} showCheck={true} checked={checkedNames.includes(item.name)} onCheck={toggleCheck} />)}
@@ -289,7 +290,7 @@ function SearchCard({ item, genScoutMsg, showCheck, checked, onCheck }) {
       </div>
       <div style={{ padding: "0 10px 8px" }}><div style={{ fontSize: 9, fontWeight: 600, color: "#8C8A82", marginBottom: 2 }}>📝 メモ</div><input placeholder="社内メモを入力..." style={{ width: "100%", border: "1px solid #E8E6E1", borderRadius: 4, padding: "4px 6px", fontSize: 9, color: "#555", boxSizing: "border-box" }} /></div>
       <div style={{ padding: "0 10px 8px" }}>
-        <div style={{ padding: "6px 0", textAlign: "center", background: "#E8593C", color: "#fff", borderRadius: 4, fontSize: 10, fontWeight: 700 }}>スカウト送信</div>
+        <div style={{ display: "flex", gap: 4 }}><div style={{ flex: 1, padding: "6px 0", textAlign: "center", background: "#E8593C", color: "#fff", borderRadius: 4, fontSize: 10, fontWeight: 700 }}>スカウト返信</div><div style={{ flex: 1, padding: "6px 0", textAlign: "center", background: "#F1EFE8", color: "#888", borderRadius: 4, fontSize: 10, fontWeight: 600 }}>見送り</div></div>
       </div>
     </div>
   );
@@ -299,7 +300,7 @@ function SearchCard({ item, genScoutMsg, showCheck, checked, onCheck }) {
 function ScreenManageList({ onNavigate }) {
   const [tab, setTab] = useState("all");
   const [filterOpen, setFilterOpen] = useState(false);
-  const steps = [{ id: "all", l: "すべて", c: "#1a1a1a" }, { id: "s1", l: "STEP1 応募", c: "#E8593C" }, { id: "s2", l: "STEP2 面談", c: "#1D9E75" }, { id: "s3", l: "STEP3 結果", c: "#D4A02E" }];
+  const steps = [{ id: "all", l: "すべて", c: "#1a1a1a" }, { id: "s1", l: "STEP1 応募", c: "#E8593C" }, { id: "s2", l: "STEP2 応募者連絡", c: "#1D9E75" }, { id: "s3", l: "STEP3 結果", c: "#D4A02E" }];
   const rows = [
     { n: "田中 太郎", age: 25, area: "東京都", edu: "高卒", cert: "普免", step: "s1", status: "応諾", msg: true, route: "スカウト" },
     { n: "鈴木 一郎", age: 28, area: "東京都", edu: "大卒", cert: "FP2級", step: "s1", status: "一次通過", msg: false, route: "応募" },
@@ -351,14 +352,14 @@ function ScreenManageList({ onNavigate }) {
 function ScreenManageCard({ onNavigate }) {
   const [tab, setTab] = useState("all");
   const [filterOpen, setFilterOpen] = useState(false);
-  const qa1 = [{ q: "時間を忘れて取組んだものは？", a: "バレー部。毎日練習に参加した。" }, { q: "仕事経験は？", a: "カフェ接客半年、引越し事務3年。" }, { q: "特技は？", a: "パソコン入力が早い。" }];
+  const qa1 = [{ q: "時間を忘れて取組んだものは？", a: "バレー部に所属し、毎日練習に参加しておりました。" }, { q: "仕事経験は？", a: "カフェでの接客を半年、引越し会社にて事務を3年間経験いたしました。" }, { q: "特技は？", a: "パソコン入力速度には自信がございます。" }];
   const allItems = [
     { name: "田中 太郎", kana: "タナカ タロウ", age: 25, area: "東京都新宿区", edu: "新宿高校 卒", cert: "普通自動車免許", video: true, pc1: "#5a6a4a", pc2: "#8a9a7a", qa: qa1, step: "s1", route: "スカウト", extra: [{ t: "スカウト→応諾", bg: "#EDF4FF", c: "#2E6FD4" }], hasMsg: true },
-    { name: "鈴木 一郎", kana: "スズキ イチロウ", age: 28, area: "東京都練馬区", edu: "明治大学 卒", cert: "FP2級", video: false, pc1: "#6a6a4a", pc2: "#9a9a7a", qa: [{ q: "取組んだものは？", a: "大学のゼミ活動。" }, { q: "仕事経験は？", a: "営業事務3年。" }, { q: "特技は？", a: "Excel・資料作成。" }], step: "s1", route: "応募", extra: [{ t: "応募→一次通過", bg: "#EEFBF3", c: "#1D9E75" }], hasMsg: false },
-    { name: "高橋 美咲", kana: "タカハシ ミサキ", age: 20, area: "千葉県船橋市", edu: "船橋高校 卒", cert: null, video: true, pc1: "#6a5a3a", pc2: "#a48a6a", qa: [{ q: "取組んだものは？", a: "ダンス部。大会に向けて毎日練習。" }, { q: "仕事経験は？", a: "コンビニバイト2年。" }, { q: "特技は？", a: "明るく元気に挨拶できる。" }], step: "s2", route: "応募", extra: [{ t: "面談 4/14 10:00", bg: "#EEFBF3", c: "#1D9E75" }], hasMsg: true },
-    { name: "渡辺 健太", kana: "ワタナベ ケンタ", age: 31, area: "埼玉県さいたま市", edu: "専門学校 卒", cert: "介護福祉士", video: false, pc1: "#7a6a3a", pc2: "#b49a6a", qa: [{ q: "取組んだものは？", a: "介護施設でのボランティア。" }, { q: "仕事経験は？", a: "介護スタッフ5年。" }, { q: "特技は？", a: "お年寄りとの会話。" }], step: "s3", route: "スカウト", extra: [{ t: "内定承諾", bg: "#FFF8E6", c: "#D4A02E" }], hasMsg: true },
+    { name: "鈴木 一郎", kana: "スズキ イチロウ", age: 28, area: "東京都練馬区", edu: "明治大学 卒", cert: "FP2級", video: false, pc1: "#6a6a4a", pc2: "#9a9a7a", qa: [{ q: "取組んだものは？", a: "大学にてゼミ活動に打ち込んでまいりました。" }, { q: "仕事経験は？", a: "営業事務を3年間経験いたしました。" }, { q: "特技は？", a: "Excel操作および資料作成が得意でございます。" }], step: "s1", route: "応募", extra: [{ t: "応募→一次通過", bg: "#EEFBF3", c: "#1D9E75" }], hasMsg: false },
+    { name: "高橋 美咲", kana: "タカハシ ミサキ", age: 20, area: "千葉県船橋市", edu: "船橋高校 卒", cert: null, video: true, pc1: "#6a5a3a", pc2: "#a48a6a", qa: [{ q: "取組んだものは？", a: "ダンス部に所属し、大会に向けて毎日練習に励んでおりました。" }, { q: "仕事経験は？", a: "コンビニでのアルバイトを2年間経験いたしました。" }, { q: "特技は？", a: "明るく元気な挨拶を心がけております。" }], step: "s2", route: "応募", extra: [{ t: "面談 4/14 10:00", bg: "#EEFBF3", c: "#1D9E75" }], hasMsg: true },
+    { name: "渡辺 健太", kana: "ワタナベ ケンタ", age: 31, area: "埼玉県さいたま市", edu: "専門学校 卒", cert: "介護福祉士", video: false, pc1: "#7a6a3a", pc2: "#b49a6a", qa: [{ q: "取組んだものは？", a: "介護施設でのボランティア活動に取り組んでまいりました。" }, { q: "仕事経験は？", a: "介護スタッフとして5年間勤務いたしました。" }, { q: "特技は？", a: "ご高齢の方との会話が得意でございます。" }], step: "s3", route: "スカウト", extra: [{ t: "内定承諾", bg: "#FFF8E6", c: "#D4A02E" }], hasMsg: true },
   ];
-  const steps = [{ id: "all", l: "すべて", c: "#1a1a1a" }, { id: "s1", l: "STEP1 応募", c: "#E8593C" }, { id: "s2", l: "STEP2 面談", c: "#1D9E75" }, { id: "s3", l: "STEP3 結果", c: "#D4A02E" }];
+  const steps = [{ id: "all", l: "すべて", c: "#1a1a1a" }, { id: "s1", l: "STEP1 応募", c: "#E8593C" }, { id: "s2", l: "STEP2 応募者連絡", c: "#1D9E75" }, { id: "s3", l: "STEP3 結果", c: "#D4A02E" }];
   const stepMap = { s1: "STEP1", s2: "STEP2", s3: "STEP3" };
   const filtered = tab === "all" ? allItems : allItems.filter(i => i.step === tab);
   return (
@@ -414,15 +415,14 @@ function ManageCard({ item, step, onNavigate }) {
       <div onClick={e => e.stopPropagation()} style={{ padding: "0 10px 8px" }}><div style={{ fontSize: 9, fontWeight: 600, color: "#8C8A82", marginBottom: 2 }}>📝 メモ</div><input placeholder="社内メモを入力..." style={{ width: "100%", border: "1px solid #E8E6E1", borderRadius: 4, padding: "4px 6px", fontSize: 9, color: "#555", boxSizing: "border-box" }} /></div>
       <div style={{ padding: "0 10px 8px" }}>
         {step === "STEP1" && <div style={{ display: "flex", gap: 3, flexWrap: "wrap" }}>
-          <div style={{ flex: 1, padding: "5px 0", textAlign: "center", background: "#1D9E75", color: "#fff", borderRadius: 4, fontSize: 8, fontWeight: 700 }}>→STEP2 面談</div>
-          <div style={{ flex: 1, padding: "5px 0", textAlign: "center", background: "#D4A02E", color: "#fff", borderRadius: 4, fontSize: 8, fontWeight: 700 }}>→STEP3 結果</div>
-          <div style={{ flex: 1, padding: "5px 0", textAlign: "center", background: "#F1EFE8", color: "#888", borderRadius: 4, fontSize: 8, fontWeight: 600 }}>不採用</div>
+          <div style={{ flex: 1, padding: "5px 0", textAlign: "center", background: "#1D9E75", color: "#fff", borderRadius: 4, fontSize: 9, fontWeight: 700 }}>面談へ進む</div>
+          <div style={{ flex: 1, padding: "5px 0", textAlign: "center", background: "#F1EFE8", color: "#888", borderRadius: 4, fontSize: 9, fontWeight: 600 }}>見送り</div>
         </div>}
         {step === "STEP2" && <div>
-          <div onClick={e => { e.stopPropagation(); onNavigate("応募者詳細"); }} style={{ padding: "5px 0", textAlign: "center", background: "#1D9E75", color: "#fff", borderRadius: 4, fontSize: 9, fontWeight: 700, marginBottom: 4, cursor: "pointer" }}>📅 面談日程を設定</div>
+          <div onClick={e => { e.stopPropagation(); onNavigate("応募者詳細"); }} style={{ padding: "5px 0", textAlign: "center", background: "#1D9E75", color: "#fff", borderRadius: 4, fontSize: 9, fontWeight: 700, marginBottom: 4, cursor: "pointer" }}>💬 面談日程等メッセージ</div>
           <div style={{ display: "flex", gap: 4 }}>
-            <div style={{ flex: 1, padding: "5px 0", textAlign: "center", background: "#D4A02E", color: "#fff", borderRadius: 4, fontSize: 9, fontWeight: 700 }}>通過→STEP3</div>
-            <div style={{ flex: 1, padding: "5px 0", textAlign: "center", background: "#F1EFE8", color: "#888", borderRadius: 4, fontSize: 9, fontWeight: 600 }}>不採用</div>
+            <div style={{ flex: 1, padding: "5px 0", textAlign: "center", background: "#D4A02E", color: "#fff", borderRadius: 4, fontSize: 9, fontWeight: 700 }}>面談完了</div>
+            <div style={{ flex: 1, padding: "5px 0", textAlign: "center", background: "#F1EFE8", color: "#888", borderRadius: 4, fontSize: 9, fontWeight: 600 }}>見送り</div>
           </div>
         </div>}
         {step === "STEP3" && <div style={{ padding: "5px 0", textAlign: "center", background: "#D4A02E", color: "#fff", borderRadius: 4, fontSize: 10, fontWeight: 700 }}>🎉 選考結果を報告</div>}
@@ -433,8 +433,8 @@ function ManageCard({ item, step, onNavigate }) {
 
 function ScreenApplicantDetail({ onNavigate }) {
   const [tab, setTab] = useState("選考情報");
-  const tabs = ["選考情報", "AI面談", "日程調整", "選考結果", "メッセージ"];
-  const tabC = { "選考情報": "#E8593C", "AI面談": "#534AB7", "日程調整": "#1D9E75", "選考結果": "#D4A02E", "メッセージ": "#2E6FD4" };
+  const tabs = ["選考情報", "選考結果", "メッセージ"];
+  const tabC = { "選考情報": "#E8593C", "選考結果": "#D4A02E", "メッセージ": "#2E6FD4" };
   return (
     <div style={{ flex: 1, display: "flex", flexDirection: "column", background: "#FAFAF8" }}>
       <TopBar title="応募者詳細 - 田中 太郎">
@@ -475,11 +475,11 @@ function ScreenApplicantDetail({ onNavigate }) {
               <div style={{ background: "#fff", borderRadius: 12, padding: 16, border: "1px solid #E8E6E1", marginBottom: 16 }}>
                 <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 10 }}>選考ステータス</div>
                 <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
-                  {[{ l: "新着", done: true }, { l: "STEP1 応募", done: true }, { l: "STEP2 面談", done: true }, { l: "STEP3 結果", done: false }, { l: "STEP4 内定", done: false }].map((s, i) => (
+                  {[{ l: "STEP1 応募", done: true }, { l: "STEP2 応募者連絡", done: true }, { l: "STEP3 結果", done: false }].map((s, i) => (
                     <div key={i} style={{ display: "flex", alignItems: "center", gap: 4 }}>
                       <div style={{ width: 22, height: 22, borderRadius: 11, background: s.done ? "#E8593C" : "#E8E6E1", color: "#fff", fontSize: 9, fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center" }}>{s.done ? "✓" : i + 1}</div>
                       <span style={{ fontSize: 9, color: s.done ? "#1A1A1A" : "#B4B2A9", fontWeight: s.done ? 600 : 400 }}>{s.l}</span>
-                      {i < 4 && <span style={{ color: "#D3D1C7", fontSize: 10 }}>→</span>}
+                      {i < 2 && <span style={{ color: "#D3D1C7", fontSize: 10 }}>→</span>}
                     </div>
                   ))}
                 </div>
@@ -498,75 +498,6 @@ function ScreenApplicantDetail({ onNavigate }) {
                   <div style={{ width: 48, height: 48, borderRadius: 24, background: "rgba(255,255,255,0.15)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 20, color: "#fff", cursor: "pointer" }}>▶</div>
                 </div>
               </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* ===== AI面談 TAB ===== */}
-      {tab === "AI面談" && (
-        <div style={{ flex: 1, padding: "20px 24px 24px", overflow: "auto" }}>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
-            <div>
-              <div style={{ background: "#fff", borderRadius: 12, padding: 20, border: "1px solid #E8E6E1", marginBottom: 16 }}>
-                <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 14 }}>AI面談サマリー</div>
-                <div style={{ background: "#F0EDFE", borderRadius: 10, padding: 14, fontSize: 13, color: "#534AB7", lineHeight: 1.7, marginBottom: 14 }}>コミュニケーション能力が高く、質問に対して的確かつ積極的に回答。未経験ながら学ぶ意欲が強い印象。チームワークを重視する姿勢あり。</div>
-                {[{ l: "コミュニケーション", s: 4 }, { l: "意欲・積極性", s: 5 }, { l: "論理的思考", s: 3 }, { l: "協調性", s: 4 }].map(i => (
-                  <div key={i.l} style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 8 }}><div style={{ width: 120, fontSize: 12, color: "#5F5E5A" }}>{i.l}</div><div style={{ display: "flex", gap: 3 }}>{[1, 2, 3, 4, 5].map(n => <div key={n} style={{ width: 20, height: 20, borderRadius: 4, background: n <= i.s ? "#534AB7" : "#E8E6E1" }} />)}</div></div>
-                ))}
-              </div>
-              <div style={{ background: "#fff", borderRadius: 12, padding: 20, border: "1px solid #E8E6E1" }}>
-                <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 10 }}>面談Q&A詳細</div>
-                {[{ q: "これまでの仕事で一番やりがいを感じた経験は？", a: "飲食店のアルバイトで、常連のお客様から名前を覚えてもらえた時にやりがいを感じました。" }, { q: "施工管理に興味を持った理由は？", a: "ものづくりに関わる仕事がしたいと以前から思っており、建物が完成する過程に携われることに魅力を感じました。" }, { q: "チームで働く上で大切なことは？", a: "報連相を怠らないことと、相手の立場に立って考えることだと思います。" }].map((item, i) => (
-                  <div key={i} style={{ marginBottom: 12 }}><div style={{ fontSize: 12, fontWeight: 600, color: "#8C8A82", marginBottom: 4 }}>Q{i + 1}. {item.q}</div><div style={{ fontSize: 13, lineHeight: 1.6, background: "#F7F6F3", borderRadius: 8, padding: 10 }}>{item.a}</div></div>
-                ))}
-              </div>
-            </div>
-            <div>
-              <div style={{ background: "#fff", borderRadius: 12, padding: 20, border: "1px solid #E8E6E1" }}>
-                <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 14 }}>AI面談動画</div>
-                <div style={{ height: 300, borderRadius: 10, background: "#1A1A1A", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 12 }}>
-                  <div style={{ width: 64, height: 64, borderRadius: 32, background: "rgba(255,255,255,0.15)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 28, color: "#fff", cursor: "pointer" }}>▶</div>
-                </div>
-                <div style={{ fontSize: 12, color: "#8C8A82", marginBottom: 16 }}>面談時間: 8分32秒 ・ 実施日: 2026/04/06</div>
-                <div style={{ display: "flex", gap: 10 }}><div style={{ flex: 1 }}><Btn>面接に進める（→STEP3）</Btn></div><div style={{ flex: 1 }}><Btn outline danger>見送る</Btn></div></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* ===== 日程調整 TAB ===== */}
-      {tab === "日程調整" && (
-        <div style={{ flex: 1, padding: "20px 24px 24px", overflow: "auto" }}>
-          <div style={{ maxWidth: 640, margin: "0 auto" }}>
-            <div style={{ background: "#fff", borderRadius: 12, padding: 28, border: "1px solid #E8E6E1", marginBottom: 16 }}>
-              <div style={{ fontSize: 16, fontWeight: 700, marginBottom: 16 }}>📅 面談候補日を登録</div>
-              <div style={{ fontSize: 12, color: "#5F5E5A", marginBottom: 16, lineHeight: 1.6 }}>候補日を最大3つ登録すると、求職者にSMS・メールで通知されます。求職者がアプリ内で選択し、確定します。</div>
-              {[1, 2, 3].map(i => (
-                <div key={i} style={{ display: "grid", gridTemplateColumns: "1fr 100px 100px", gap: 10, marginBottom: 10 }}>
-                  <Field label={`候補${i} - 日付`} placeholder="2026/04/14" /><Field label="開始" placeholder="10:00" /><Field label="終了" placeholder="11:00" />
-                </div>
-              ))}
-              <Field label="面接形式" placeholder="対面 / オンライン ▼" wide />
-              <Field label="面接場所・URL" placeholder="東京都新宿区西新宿1-1-1 サンプルビル3F" wide />
-              <Field label="備考（任意）" placeholder="持ち物や注意事項など" type="textarea" wide />
-              <div style={{ background: "#EEFBF3", borderRadius: 8, padding: 12, marginBottom: 16, fontSize: 12, color: "#1D9E75" }}>登録後、求職者にSMS・メールで通知されます。求職者が候補日から選択します。</div>
-              <div style={{ display: "flex", justifyContent: "flex-end", gap: 10 }}><Btn primary={false}>キャンセル</Btn><Btn>日程を登録する</Btn></div>
-            </div>
-            {/* 既存の調整状況 */}
-            <div style={{ background: "#fff", borderRadius: 12, padding: 20, border: "1px solid #E8E6E1" }}>
-              <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 14 }}>日程調整の状況</div>
-              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 12 }}>
-                <div style={{ width: 8, height: 8, borderRadius: 4, background: "#1D9E75" }} />
-                <span style={{ fontSize: 13, fontWeight: 600 }}>候補日提示済み — 求職者の回答待ち</span>
-              </div>
-              {["4月14日（月）10:00〜11:00", "4月15日（火）14:00〜15:00", "4月17日（木）10:00〜11:00"].map((d, i) => (
-                <div key={i} style={{ padding: "8px 14px", marginBottom: 6, borderRadius: 6, border: "1px solid #E8E6E1", fontSize: 13, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                  <span>{d}</span>
-                  <span style={{ fontSize: 11, color: "#B4B2A9" }}>回答待ち</span>
-                </div>
-              ))}
             </div>
           </div>
         </div>
