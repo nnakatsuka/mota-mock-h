@@ -77,10 +77,10 @@ function ScreenPhoto({ onNavigate }) { return (<><Header title="プロフィー�
 function ScreenScoutWait({ onNavigate }) { return (<div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "40px 20px", background: "linear-gradient(180deg,#FFF5F2,#FAFAF8)" }}><div style={{ width: 80, height: 80, borderRadius: 40, background: "#E8593C", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 36, color: "#fff", marginBottom: 20 }}>✓</div><div style={{ fontSize: 22, fontWeight: 800, marginBottom: 8 }}>登録完了！</div><div style={{ fontSize: 14, color: "#5F5E5A", textAlign: "center", lineHeight: 1.7, marginBottom: 32 }}>企業からのスカウトをお待ちください。</div><div style={{ width: "100%" }} onClick={() => onNavigate("CSホーム")}><Btn>ホーム画面へ</Btn></div></div>); }
 
 // Reusable card component for scout/apply lists
-function JobCard({ item, onNavigate, showScoutLink, hideJobDetail }) {
+function JobCard({ item, onNavigate, showScoutLink }) {
   const ss = item.status === "スカウト" ? { bg: "#EDF4FF", c: "#2E6FD4" } : item.status === "応募済" ? { bg: "#FFF3ED", c: "#E8593C" } : item.status === "選考中" ? { bg: "#FFF3ED", c: "#E8593C" } : item.status === "応募中" ? { bg: "#FFF3ED", c: "#E8593C" } : item.status === "内定" ? { bg: "#EEFBF3", c: "#1D9E75" } : item.status === "保留" ? { bg: "#FFF8E6", c: "#D4A02E" } : item.status === "お断り" ? { bg: "#F1EFE8", c: "#8C8A82" } : item.status === "不採用" ? { bg: "#FCEBEB", c: "#A32D2D" } : item.status === "辞退" ? { bg: "#F1EFE8", c: "#8C8A82" } : item.status === "お気に入り" ? { bg: "#FFF8E6", c: "#D4A02E" } : { bg: "#F1EFE8", c: "#8C8A82" };
   return (
-    <div style={{ background: "#fff", borderRadius: 12, marginBottom: 10, border: "1px solid #E8E6E1", overflow: "hidden", position: "relative" }}>
+    <div onClick={() => onNavigate("求人詳細")} style={{ background: "#fff", borderRadius: 12, marginBottom: 10, border: "1px solid #E8E6E1", overflow: "hidden", position: "relative", cursor: "pointer" }}>
       {item.isNew && <div style={{ position: "absolute", top: 0, right: 0, background: "#E8593C", color: "#fff", fontSize: 9, fontWeight: 800, padding: "2px 8px", borderRadius: "0 0 0 8px" }}>NEW</div>}
       <div style={{ display: "flex", gap: 10, padding: "12px 14px", alignItems: "center" }}>
         <div style={{ width: 40, height: 40, borderRadius: 8, background: item.logo, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9, color: "#fff" }}>ロゴ</div>
@@ -95,9 +95,8 @@ function JobCard({ item, onNavigate, showScoutLink, hideJobDetail }) {
         <div style={{ display: "flex", alignItems: "center", gap: 4 }}><span style={{ fontSize: 9, fontWeight: 700, color: "#fff", background: "#2E6FD4", padding: "2px 5px", borderRadius: 3 }}>休日</span><span style={{ fontSize: 12, fontWeight: 700 }}>{item.rest}</span></div>
       </div>
       <div style={{ display: "flex", borderTop: "1px solid #F1EFE8" }}>
-        {showScoutLink && <div onClick={() => onNavigate("スカウト詳細")} style={{ flex: 1, padding: "10px 0", textAlign: "center", fontSize: 11, fontWeight: 600, color: "#2E6FD4", cursor: "pointer", borderRight: "1px solid #F1EFE8" }}>📩 スカウト詳細</div>}
-        {!hideJobDetail && <div onClick={() => onNavigate("求人詳細")} style={{ flex: 1, padding: "10px 0", textAlign: "center", fontSize: 11, fontWeight: 600, color: "#5F5E5A", cursor: "pointer", borderRight: "1px solid #F1EFE8" }}>📄 求人詳細</div>}
-        <div onClick={() => onNavigate("メッセージ詳細")} style={{ flex: 1, padding: "10px 0", textAlign: "center", fontSize: 11, fontWeight: 600, color: "#E8593C", cursor: "pointer", position: "relative" }}>💬 メッセージ{item.hasMsg && <span style={{ display: "inline-block", width: 7, height: 7, borderRadius: 4, background: "#E8593C", marginLeft: 3, verticalAlign: "top" }} />}</div>
+        {showScoutLink && <div onClick={e => { e.stopPropagation(); onNavigate("スカウト詳細"); }} style={{ flex: 1, padding: "10px 0", textAlign: "center", fontSize: 11, fontWeight: 600, color: "#2E6FD4", cursor: "pointer", borderRight: "1px solid #F1EFE8" }}>📩 スカウト詳細</div>}
+        <div onClick={e => { e.stopPropagation(); onNavigate("メッセージ詳細"); }} style={{ flex: 1, padding: "10px 0", textAlign: "center", fontSize: 11, fontWeight: 600, color: "#E8593C", cursor: "pointer", position: "relative" }}>💬 メッセージ{item.hasMsg && <span style={{ display: "inline-block", width: 7, height: 7, borderRadius: 4, background: "#E8593C", marginLeft: 3, verticalAlign: "top" }} />}</div>
       </div>
     </div>
   );
@@ -124,7 +123,7 @@ function ScreenScoutList({ onNavigate }) {
         })}
       </div>
       <div style={{ flex: 1, padding: "12px 16px", overflow: "auto" }}>
-        {filtered.map((item, i) => <JobCard key={i} item={item} onNavigate={onNavigate} showScoutLink={true} hideJobDetail={true} />)}
+        {filtered.map((item, i) => <JobCard key={i} item={item} onNavigate={onNavigate} showScoutLink={true} />)}
         {filtered.length === 0 && <div style={{ textAlign: "center", padding: 40, color: "#bbb", fontSize: 13 }}>該当するスカウトはありません</div>}
       </div>
       <BottomNav active="スカウト一覧" onNavigate={onNavigate} scoutBadge={2} msgBadge={3} />
@@ -191,7 +190,18 @@ function ScreenMessagesTop({ onNavigate }) {
 }
 
 function ScreenMessageDetail({ onNavigate }) {
-  return (<><Header title="サンプル建設" onBack={() => onNavigate("メッセージTOP")} onNavigate={onNavigate} /><div style={{ flex: 1, padding: "16px 20px", overflow: "auto" }}><div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 14 }}><div style={{ maxWidth: 260 }}><div style={{ background: "#E8593C", color: "#fff", borderRadius: "12px 12px 4px 12px", padding: "12px 16px", fontSize: 13, lineHeight: 1.6 }}>面接の候補日をお送りしました。4月14日(月)10:00〜はいかがですか？</div><div style={{ textAlign: "right", fontSize: 10, color: "#B4B2A9", marginTop: 4 }}>企業 14:30</div></div></div><div style={{ display: "flex", marginBottom: 14 }}><div style={{ maxWidth: 260 }}><div style={{ background: "#fff", border: "1px solid #E8E6E1", borderRadius: "12px 12px 12px 4px", padding: "12px 16px", fontSize: 13, lineHeight: 1.6 }}>4月14日の10:00からでお願いしたいです。</div><div style={{ fontSize: 10, color: "#B4B2A9", marginTop: 4 }}>あなた 14:45</div></div></div><div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 14 }}><div style={{ maxWidth: 260 }}><div style={{ background: "#E8593C", color: "#fff", borderRadius: "12px 12px 4px 12px", padding: "12px 16px", fontSize: 13, lineHeight: 1.6 }}>4月14日10:00で確定です。場所は新宿区西新宿1-1-1 サンプルビル3Fです。</div><div style={{ textAlign: "right", fontSize: 10, color: "#B4B2A9", marginTop: 4 }}>企業 15:00</div></div></div></div><div style={{ padding: "12px 16px", background: "#fff", borderTop: "1px solid #E8E6E1", display: "flex", gap: 10, alignItems: "center" }}><div style={{ flex: 1, height: 40, borderRadius: 20, border: "1.5px solid #D3D1C7", display: "flex", alignItems: "center", padding: "0 16px", fontSize: 13, color: "#B4B2A9" }}>メッセージを入力...</div><div style={{ width: 40, height: 40, borderRadius: 20, background: "#E8593C", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 16 }}>↑</div></div></>);
+  return (<><Header title="サンプル建設" onBack={() => onNavigate("メッセージTOP")} onNavigate={onNavigate} />
+    {/* 会社情報ヘッダー */}
+    <div onClick={() => onNavigate("求人詳細")} style={{ display: "flex", gap: 10, padding: "10px 16px", background: "#fff", borderBottom: "1px solid #E8E6E1", cursor: "pointer", alignItems: "center" }}>
+      <div style={{ width: 40, height: 40, borderRadius: 8, background: "#2E6FD4", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 9, color: "#fff" }}>ロゴ</div>
+      <div style={{ flex: 1 }}>
+        <div style={{ fontSize: 13, fontWeight: 700 }}>株式会社サンプル建設</div>
+        <div style={{ fontSize: 11, color: "#5F5E5A" }}>施工管理スタッフ ・ 東京都新宿区</div>
+        <div style={{ fontSize: 10, color: "#2E6FD4", marginTop: 2 }}>https://sample-kensetsu.co.jp →</div>
+      </div>
+      <span style={{ fontSize: 14, color: "#D3D1C7" }}>›</span>
+    </div>
+    <div style={{ flex: 1, padding: "16px 20px", overflow: "auto" }}><div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 14 }}><div style={{ maxWidth: 260 }}><div style={{ background: "#E8593C", color: "#fff", borderRadius: "12px 12px 4px 12px", padding: "12px 16px", fontSize: 13, lineHeight: 1.6 }}>面接の候補日をお送りしました。4月14日(月)10:00〜はいかがですか？</div><div style={{ textAlign: "right", fontSize: 10, color: "#B4B2A9", marginTop: 4 }}>企業 14:30</div></div></div><div style={{ display: "flex", marginBottom: 14 }}><div style={{ maxWidth: 260 }}><div style={{ background: "#fff", border: "1px solid #E8E6E1", borderRadius: "12px 12px 12px 4px", padding: "12px 16px", fontSize: 13, lineHeight: 1.6 }}>4月14日の10:00からでお願いしたいです。</div><div style={{ fontSize: 10, color: "#B4B2A9", marginTop: 4 }}>あなた 14:45</div></div></div><div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 14 }}><div style={{ maxWidth: 260 }}><div style={{ background: "#E8593C", color: "#fff", borderRadius: "12px 12px 4px 12px", padding: "12px 16px", fontSize: 13, lineHeight: 1.6 }}>4月14日10:00で確定です。場所は新宿区西新宿1-1-1 サンプルビル3Fです。</div><div style={{ textAlign: "right", fontSize: 10, color: "#B4B2A9", marginTop: 4 }}>企業 15:00</div></div></div></div><div style={{ padding: "12px 16px", background: "#fff", borderTop: "1px solid #E8E6E1", display: "flex", gap: 10, alignItems: "center" }}><div style={{ flex: 1, height: 40, borderRadius: 20, border: "1.5px solid #D3D1C7", display: "flex", alignItems: "center", padding: "0 16px", fontSize: 13, color: "#B4B2A9" }}>メッセージを入力...</div><div style={{ width: 40, height: 40, borderRadius: 20, background: "#E8593C", display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 16 }}>↑</div></div></>);
 }
 
 function ScreenMyPage({ onNavigate }) {
@@ -215,7 +225,22 @@ function ScreenProfileEdit({ onNavigate }) {
 }
 
 function ScreenNotification({ onNavigate }) {
-  return (<><Header title="通知設定" onBack={() => onNavigate("マイページ")} onNavigate={onNavigate} /><div style={{ flex: 1, padding: "20px", overflow: "auto" }}><div style={{ background: "#fff", borderRadius: 12, padding: 20, border: "1px solid #E8E6E1" }}>{[{ label: "スカウト通知", desc: "新しいスカウトが届いたとき", on: true },{ label: "メッセージ通知", desc: "企業からメッセージが届いたとき", on: true },{ label: "選考結果通知", desc: "選考結果が更新されたとき", on: true },{ label: "おすすめ求人", desc: "条件に合う求人が掲載されたとき", on: false }].map((item,i) => (<div key={i} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "14px 0", borderBottom: i < 3 ? "1px solid #F1EFE8" : "none" }}><div><div style={{ fontSize: 14, fontWeight: 600 }}>{item.label}</div><div style={{ fontSize: 11, color: "#8C8A82", marginTop: 2 }}>{item.desc}</div></div><div style={{ width: 44, height: 24, borderRadius: 12, background: item.on ? "#E8593C" : "#D3D1C7", display: "flex", alignItems: "center", padding: "0 2px", cursor: "pointer" }}><div style={{ width: 20, height: 20, borderRadius: 10, background: "#fff", marginLeft: item.on ? 20 : 0, transition: "0.2s" }} /></div></div>))}</div></div></>);
+  return (<><Header title="通知設定" onBack={() => onNavigate("マイページ")} onNavigate={onNavigate} /><div style={{ flex: 1, padding: "20px", overflow: "auto" }}><div style={{ background: "#fff", borderRadius: 12, padding: 20, border: "1px solid #E8E6E1" }}>
+    <div style={{ fontSize: 14, fontWeight: 700, marginBottom: 16 }}>おすすめ求人通知</div>
+    <div style={{ fontSize: 13, color: "#5F5E5A", lineHeight: 1.7, marginBottom: 16 }}>あなたのプロフィールに合った求人が掲載されたときにお知らせします。</div>
+    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "14px 0", borderBottom: "1px solid #F1EFE8" }}>
+      <div><div style={{ fontSize: 14, fontWeight: 600 }}>プッシュ通知</div><div style={{ fontSize: 11, color: "#8C8A82", marginTop: 2 }}>アプリにプッシュ通知を送信</div></div>
+      <div style={{ width: 44, height: 24, borderRadius: 12, background: "#E8593C", display: "flex", alignItems: "center", padding: "0 2px", cursor: "pointer" }}><div style={{ width: 20, height: 20, borderRadius: 10, background: "#fff", marginLeft: 20 }} /></div>
+    </div>
+    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "14px 0", borderBottom: "1px solid #F1EFE8" }}>
+      <div><div style={{ fontSize: 14, fontWeight: 600 }}>SMS通知</div><div style={{ fontSize: 11, color: "#8C8A82", marginTop: 2 }}>SMSでお知らせ</div></div>
+      <div style={{ width: 44, height: 24, borderRadius: 12, background: "#E8593C", display: "flex", alignItems: "center", padding: "0 2px", cursor: "pointer" }}><div style={{ width: 20, height: 20, borderRadius: 10, background: "#fff", marginLeft: 20 }} /></div>
+    </div>
+    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "14px 0" }}>
+      <div><div style={{ fontSize: 14, fontWeight: 600 }}>メール通知</div><div style={{ fontSize: 11, color: "#8C8A82", marginTop: 2 }}>メールでお知らせ</div></div>
+      <div style={{ width: 44, height: 24, borderRadius: 12, background: "#D3D1C7", display: "flex", alignItems: "center", padding: "0 2px", cursor: "pointer" }}><div style={{ width: 20, height: 20, borderRadius: 10, background: "#fff", marginLeft: 0 }} /></div>
+    </div>
+  </div></div></>);
 }
 
 function ScreenTerms({ onNavigate }) {
