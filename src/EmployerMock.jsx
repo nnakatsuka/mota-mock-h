@@ -271,11 +271,11 @@ function ScreenManageList({ onNavigate }) {
           })}
         </div>
         <div style={{ background: "#fff", border: "1px solid #E8E6E1", borderRadius: 8, overflow: "hidden" }}>
-          <div style={{ display: "grid", gridTemplateColumns: "28px 32px 55px 80px 34px 56px 46px 50px 65px 55px 34px 1fr 140px", background: "#F7F6F3", borderBottom: "1px solid #E8E6E1", fontSize: 10, fontWeight: 600, color: "#5F5E5A", padding: "8px 4px", alignItems: "center" }}>
-            <div style={{ textAlign: "center" }}></div><div>写真</div><div>経路</div><div>氏名</div><div>年齢</div><div>エリア</div><div>学歴</div><div>資格</div><div>ステップ</div><div>ステータス</div><div>MSG</div><div>メモ</div><div>アクション</div>
+          <div style={{ display: "grid", gridTemplateColumns: "28px 32px 55px 80px 34px 56px 46px 50px 65px 55px 34px 140px 1fr", background: "#F7F6F3", borderBottom: "1px solid #E8E6E1", fontSize: 10, fontWeight: 600, color: "#5F5E5A", padding: "8px 4px", alignItems: "center" }}>
+            <div style={{ textAlign: "center" }}></div><div>写真</div><div>経路</div><div>氏名</div><div>年齢</div><div>エリア</div><div>学歴</div><div>資格</div><div>ステップ</div><div>ステータス</div><div>MSG</div><div>アクション</div><div>メモ</div>
           </div>
           {filtered.map((r, i) => (
-            <div key={i} onClick={() => onNavigate("応募者詳細")} style={{ display: "grid", gridTemplateColumns: "28px 32px 55px 80px 34px 56px 46px 50px 65px 55px 34px 1fr 140px", borderBottom: "1px solid #F1EFE8", fontSize: 12, padding: "6px 4px", cursor: "pointer", alignItems: "center" }}>
+            <div key={i} onClick={() => onNavigate("応募者詳細")} style={{ display: "grid", gridTemplateColumns: "28px 32px 55px 80px 34px 56px 46px 50px 65px 55px 34px 140px 1fr", borderBottom: "1px solid #F1EFE8", fontSize: 12, padding: "6px 4px", cursor: "pointer", alignItems: "center" }}>
               <div style={{ textAlign: "center" }}><input type="checkbox" onClick={e => e.stopPropagation()} /></div>
               <div><img src={FACE_IMG} alt="" style={{ width: 24, height: 24, borderRadius: 12, objectFit: "cover" }} /></div>
               <div><span style={{ fontSize: 8, padding: "2px 4px", borderRadius: 3, background: r.route === "応募" ? "#EEFBF3" : "#EDF4FF", color: r.route === "応募" ? "#1D9E75" : "#2E6FD4", fontWeight: 700 }}>{r.route === "応募" ? "📥応募" : "📩Scout"}</span></div>
@@ -283,12 +283,12 @@ function ScreenManageList({ onNavigate }) {
               <div><span style={{ fontSize: 9, padding: "2px 5px", borderRadius: 3, background: (stepC[r.step] || "#888") + "15", color: stepC[r.step], fontWeight: 600 }}>{stepL[r.step]}</span></div>
               <div><span style={{ fontSize: 9, padding: "2px 4px", borderRadius: 3, background: "#F1EFE8", color: "#5F5E5A", fontWeight: 600 }}>{r.status}</span></div>
               <div style={{ textAlign: "center" }}>{r.msg ? <span style={{ color: "#E8593C", fontWeight: 700 }}>●</span> : <span style={{ color: "#ddd" }}>-</span>}</div>
-              <div><input placeholder="メモ" onClick={e => e.stopPropagation()} style={{ border: "1px solid #E8E6E1", borderRadius: 4, padding: "2px 6px", fontSize: 10, width: "90%", color: "#555" }} /></div>
               <div style={{ display: "flex", gap: 2, flexWrap: "wrap" }} onClick={e => e.stopPropagation()}>
                 {r.step === "s1" && <><div style={{ padding: "3px 6px", borderRadius: 3, background: "#1D9E75", color: "#fff", fontSize: 8, fontWeight: 700, cursor: "pointer" }}>面接へ進む</div><div style={{ padding: "3px 6px", borderRadius: 3, background: "#F1EFE8", color: "#888", fontSize: 8, fontWeight: 600, cursor: "pointer" }}>見送り</div><div onClick={() => onNavigate("応募者詳細")} style={{ padding: "3px 6px", borderRadius: 3, background: "#2E6FD4", color: "#fff", fontSize: 8, fontWeight: 700, cursor: "pointer" }}>💬</div></>}
                 {r.step === "s2" && <><div style={{ padding: "3px 6px", borderRadius: 3, background: "#D4A02E", color: "#fff", fontSize: 8, fontWeight: 700, cursor: "pointer" }}>面談完了</div><div style={{ padding: "3px 6px", borderRadius: 3, background: "#F1EFE8", color: "#888", fontSize: 8, fontWeight: 600, cursor: "pointer" }}>見送り</div><div onClick={() => onNavigate("応募者詳細")} style={{ padding: "3px 6px", borderRadius: 3, background: "#2E6FD4", color: "#fff", fontSize: 8, fontWeight: 700, cursor: "pointer" }}>💬</div></>}
                 {r.step === "s3" && <><div style={{ padding: "3px 6px", borderRadius: 3, background: "#D4A02E", color: "#fff", fontSize: 8, fontWeight: 700, cursor: "pointer" }}>結果報告</div><div onClick={() => onNavigate("応募者詳細")} style={{ padding: "3px 6px", borderRadius: 3, background: "#2E6FD4", color: "#fff", fontSize: 8, fontWeight: 700, cursor: "pointer" }}>💬</div></>}
               </div>
+              <div><input placeholder="メモ" onClick={e => e.stopPropagation()} style={{ border: "1px solid #E8E6E1", borderRadius: 4, padding: "2px 6px", fontSize: 10, width: "90%", color: "#555" }} /></div>
             </div>
           ))}
         </div>
