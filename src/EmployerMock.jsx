@@ -4,8 +4,8 @@ const FACE_IMG = "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1B
 const PHASES = {
   "登録": ["ログイン", "企業情報登録", "求人情報登録"],
   "ダッシュボード": ["ダッシュボード"],
-  "応募者検索": ["応募者検索(カード)", "応募者検索(リスト)"],
-  "応募者管理": ["応募者管理(カード)", "応募者管理(リスト)", "応募者詳細"],
+  "応募者検索": ["応募者検索(カード)"],
+  "応募者管理": ["応募者管理(リスト)", "応募者管理(カード)", "応募者詳細"],
   "メッセージ": ["メッセージ一覧", "チャット画面"],
   "求人・設定": ["求人管理", "求人編集", "設定"],
 };
@@ -13,7 +13,7 @@ const PHASES = {
 const NAV_ITEMS = [
   { id: "ダッシュボード", icon: "📊", label: "ダッシュボード" },
   { id: "応募者検索(カード)", icon: "🔍", label: "応募者検索" },
-  { id: "応募者管理(カード)", icon: "📋", label: "応募者管理" },
+  { id: "応募者管理(リスト)", icon: "📋", label: "応募者管理" },
   { id: "メッセージ一覧", icon: "💬", label: "メッセージ" },
   { id: "求人管理", icon: "📝", label: "求人管理" },
   { id: "設定", icon: "⚙️", label: "設定" },
@@ -29,7 +29,7 @@ function Sidebar({ active, onNavigate }) {
       </div>
       <div style={{ flex: 1, paddingTop: 8 }}>
         {NAV_ITEMS.map(item => {
-          const isActive = active === item.id || (item.id === "応募者検索(カード)" && (active === "応募者検索(カード)" || active === "応募者検索(リスト)")) || (item.id === "応募者管理(カード)" && (active === "応募者管理(カード)" || active === "応募者管理(リスト)" || active === "応募者詳細"));
+          const isActive = active === item.id || (item.id === "応募者検索(カード)" && active === "応募者検索(カード)") || (item.id === "応募者管理(リスト)" && (active === "応募者管理(カード)" || active === "応募者管理(リスト)" || active === "応募者詳細"));
           return (
             <div key={item.id} onClick={() => onNavigate(item.id)} style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 20px", cursor: "pointer", fontSize: 13, fontWeight: isActive ? 700 : 400, background: isActive ? "rgba(232,89,60,0.15)" : "transparent", color: isActive ? "#E8593C" : "#AAA", borderLeft: isActive ? "3px solid #E8593C" : "3px solid transparent" }}>{item.icon} {item.label}</div>
           );
@@ -138,8 +138,8 @@ function ScreenDashboard({ onNavigate }) {
         <div style={{ display: "flex", gap: 16, marginBottom: 24 }}>
           <div onClick={() => onNavigate("応募者検索(カード)")} style={{ flex: 1, cursor: "pointer" }}><StatCard label="スカウト残数" value="147" sub="/ 300通" color="#E8593C" /></div>
           <div onClick={() => onNavigate("応募者検索(カード)")} style={{ flex: 1, cursor: "pointer" }}><StatCard label="今月の応募数" value="12" sub="先月比 +3" color="#2E6FD4" /></div>
-          <div onClick={() => onNavigate("応募者管理(カード)")} style={{ flex: 1, cursor: "pointer" }}><StatCard label="選考中" value="5" color="#534AB7" /></div>
-          <div onClick={() => onNavigate("応募者管理(カード)")} style={{ flex: 1, cursor: "pointer" }}><StatCard label="今月の採用数" value="2" color="#1D9E75" /></div>
+          <div onClick={() => onNavigate("応募者管理(リスト)")} style={{ flex: 1, cursor: "pointer" }}><StatCard label="選考中" value="5" color="#534AB7" /></div>
+          <div onClick={() => onNavigate("応募者管理(リスト)")} style={{ flex: 1, cursor: "pointer" }}><StatCard label="今月の採用数" value="2" color="#1D9E75" /></div>
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
           <div style={{ background: "#fff", borderRadius: 12, padding: 20, border: "1px solid #E8E6E1" }}>
@@ -173,58 +173,6 @@ function ScreenSearchList({ onNavigate }) {
   const [filterOpen, setFilterOpen] = useState(false);
   const [checkedNames, setCheckedNames] = useState([]);
   const toggleCheck = (name) => setCheckedNames(prev => prev.includes(name) ? prev.filter(n => n !== name) : [...prev, name]);
-  const rows = [
-    { n: "山本 翔", age: 23, area: "東京都", edu: "高卒", cert: "普免", route: "スカウト" },
-    { n: "木村 結衣", age: 26, area: "神奈川", edu: "大卒", cert: "-", route: "応募" },
-    { n: "中村 大輝", age: 21, area: "埼玉県", edu: "高卒", cert: "-", route: "スカウト" },
-    { n: "松田 翼", age: 24, area: "千葉県", edu: "高卒", cert: "普免", route: "応募" },
-  ];
-  return (
-    <div style={{ flex: 1, overflow: "auto", background: "#FAFAF8" }}>
-      <TopBar title="応募者検索">
-        <span style={{ fontSize: 11, color: "#888" }}>残数 <strong style={{ color: "#E8593C" }}>147</strong>/300</span>
-        <div style={{ display: "flex", gap: 4, background: "#F1EFE8", borderRadius: 8, padding: 2 }}>
-          <div style={{ padding: "4px 14px", borderRadius: 6, background: "#fff", fontSize: 12, fontWeight: 600 }}>リスト</div>
-          <div onClick={() => onNavigate("応募者検索(カード)")} style={{ padding: "4px 14px", borderRadius: 6, fontSize: 12, color: "#8C8A82", cursor: "pointer" }}>カード</div>
-        </div>
-        <div onClick={() => setFilterOpen(!filterOpen)} style={{ padding: "4px 12px", borderRadius: 6, fontSize: 12, cursor: "pointer", background: filterOpen ? "#1a1a1a" : "#F1EFE8", color: filterOpen ? "#fff" : "#5F5E5A", fontWeight: 600 }}>{filterOpen ? "▲ 閉じる" : "▼ 絞り込み"}</div>
-      </TopBar>
-      <ScoutFilterBar open={filterOpen} />
-      <div style={{ padding: "12px 24px" }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12, padding: "8px 14px", background: "#EDF4FF", borderRadius: 8 }}>
-          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <div onClick={() => setCheckedNames(checkedNames.length === rows.length ? [] : rows.map(r => r.n))} style={{ width: 20, height: 20, borderRadius: 4, background: checkedNames.length === rows.length ? "#E8593C" : "#fff", border: "1.5px solid #ccc", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, color: "#fff", fontWeight: 800, cursor: "pointer" }}>{checkedNames.length === rows.length ? "✓" : ""}</div>
-            <span style={{ fontSize: 12, color: "#2E6FD4", fontWeight: 600 }}>{checkedNames.length}件選択中</span>
-          </div>
-          <Btn small disabled={checkedNames.length === 0}>一括スカウト返信（{checkedNames.length}件）</Btn>
-        </div>
-        <div style={{ background: "#fff", border: "1px solid #E8E6E1", borderRadius: 8, overflow: "hidden" }}>
-          <div style={{ display: "grid", gridTemplateColumns: "30px 55px 80px 36px 60px 50px 55px 1fr 80px", background: "#F7F6F3", borderBottom: "1px solid #E8E6E1", fontSize: 10, fontWeight: 600, color: "#5F5E5A", padding: "8px 0" }}>
-            <div style={{ textAlign: "center" }}><input type="checkbox" /></div><div>経路</div><div>氏名</div><div>年齢</div><div>エリア</div><div>学歴</div><div>資格</div><div>メモ</div><div>アクション</div>
-          </div>
-          {rows.map((r, i) => (
-            <div key={i} style={{ display: "grid", gridTemplateColumns: "30px 55px 80px 36px 60px 50px 55px 1fr 80px", borderBottom: "1px solid #F1EFE8", fontSize: 12, padding: "8px 0", alignItems: "center" }}>
-              <div style={{ textAlign: "center" }}><input type="checkbox" checked={checkedNames.includes(r.n)} onChange={() => toggleCheck(r.n)} /></div>
-              <div><span style={{ fontSize: 8, padding: "2px 4px", borderRadius: 3, background: r.route === "応募" ? "#EEFBF3" : "#EDF4FF", color: r.route === "応募" ? "#1D9E75" : "#2E6FD4", fontWeight: 700 }}>{r.route === "応募" ? "📥応募" : "📩Scout"}</span></div>
-              <div style={{ color: "#2E6FD4", fontWeight: 600 }}>{r.n}</div><div>{r.age}</div><div>{r.area}</div><div>{r.edu}</div><div style={{ fontSize: 10 }}>{r.cert}</div>
-              <div><input placeholder="メモ" style={{ border: "1px solid #E8E6E1", borderRadius: 4, padding: "2px 6px", fontSize: 10, width: "90%", color: "#555" }} /></div>
-              <div style={{ display: "flex", gap: 3 }}>
-                <div style={{ padding: "3px 8px", borderRadius: 3, background: "#E8593C", color: "#fff", fontSize: 8, fontWeight: 700, cursor: "pointer" }}>スカウト返信</div>
-                <div style={{ padding: "3px 8px", borderRadius: 3, background: "#F1EFE8", color: "#888", fontSize: 8, fontWeight: 600, cursor: "pointer" }}>見送り</div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// ===== 応募者検索（カード表示）=====
-function ScreenSearchCard({ onNavigate }) {
-  const [filterOpen, setFilterOpen] = useState(false);
-  const [checkedNames, setCheckedNames] = useState([]);
-  const toggleCheck = (name) => setCheckedNames(prev => prev.includes(name) ? prev.filter(n => n !== name) : [...prev, name]);
   const qa1 = [{ q: "時間を忘れて取組んだものは？", a: "バレー部に所属し、毎日練習に参加しておりました。" }, { q: "仕事経験は？", a: "カフェでの接客を半年、引越し会社にて事務を3年間経験いたしました。" }, { q: "特技は？", a: "パソコン入力速度には自信がございます。" }];
   const allItems = [
     { name: "山本 翔", kana: "ヤマモト ショウ", age: 23, area: "東京都世田谷区", edu: "青山高校 卒", cert: "普通自動車免許", video: true, pc1: "#4a6a8a", pc2: "#7aa4c4", qa: qa1, route: "スカウト" },
@@ -239,58 +187,53 @@ function ScreenSearchCard({ onNavigate }) {
     <div style={{ flex: 1, overflow: "auto", background: "#FAFAF8" }}>
       <TopBar title="応募者検索">
         <span style={{ fontSize: 11, color: "#888" }}>残数 <strong style={{ color: "#E8593C" }}>147</strong>/300</span>
-        <div style={{ display: "flex", gap: 4, background: "#F1EFE8", borderRadius: 8, padding: 2 }}>
-          <div onClick={() => onNavigate("応募者検索(リスト)")} style={{ padding: "4px 14px", borderRadius: 6, fontSize: 12, color: "#8C8A82", cursor: "pointer" }}>リスト</div>
-          <div style={{ padding: "4px 14px", borderRadius: 6, background: "#fff", fontSize: 12, fontWeight: 600 }}>カード</div>
-        </div>
         <div onClick={() => setFilterOpen(!filterOpen)} style={{ padding: "4px 12px", borderRadius: 6, fontSize: 12, cursor: "pointer", background: filterOpen ? "#1a1a1a" : "#F1EFE8", color: filterOpen ? "#fff" : "#5F5E5A", fontWeight: 600 }}>{filterOpen ? "▲ 閉じる" : "▼ 絞り込み"}</div>
       </TopBar>
       <ScoutFilterBar open={filterOpen} />
       <div style={{ padding: "12px 24px" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12, padding: "8px 14px", background: "#EDF4FF", borderRadius: 8 }}>
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <div onClick={() => setCheckedNames(checkedNames.length === allItems.length ? [] : allItems.map(i => i.name))} style={{ width: 20, height: 20, borderRadius: 4, background: checkedNames.length === allItems.length ? "#E8593C" : "#fff", border: "1.5px solid #ccc", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, color: "#fff", fontWeight: 800, cursor: "pointer" }}>{checkedNames.length === allItems.length ? "✓" : ""}</div>
+            <div onClick={() => setCheckedNames(checkedNames.length === allItems.length ? [] : allItems.map(i => i.name))} style={{ width: 20, height: 20, borderRadius: 4, background: checkedNames.length === allItems.length && allItems.length > 0 ? "#E8593C" : "#fff", border: "1.5px solid #ccc", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, color: "#fff", fontWeight: 800, cursor: "pointer" }}>{checkedNames.length === allItems.length && allItems.length > 0 ? "✓" : ""}</div>
             <span style={{ fontSize: 12, color: "#2E6FD4", fontWeight: 600 }}>{checkedNames.length}件選択中</span>
           </div>
-          <Btn small disabled={checkedNames.length === 0}>一括スカウト返信（{checkedNames.length}件）</Btn>
+          <Btn small disabled={checkedNames.length === 0}>一括スカウト送信（{checkedNames.length}件）</Btn>
         </div>
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 14 }}>
-          {allItems.map((item, i) => <SearchCard key={i} item={item} genScoutMsg={genScoutMsg} showCheck={true} checked={checkedNames.includes(item.name)} onCheck={toggleCheck} />)}
+          {allItems.map((item, i) => {
+            const [mode, setMode] = useState("photo");
+            const isChecked = checkedNames.includes(item.name);
+            return (
+              <div key={i} style={{ background: "#fff", borderRadius: 10, overflow: "hidden", border: "1px solid #e0e0e0", position: "relative" }}>
+                <div onClick={() => toggleCheck(item.name)} style={{ position: "absolute", top: 6, left: 6, zIndex: 10, width: 20, height: 20, borderRadius: 4, background: isChecked ? "#E8593C" : "rgba(255,255,255,0.9)", border: isChecked ? "none" : "1.5px solid #ccc", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, color: "#fff", fontWeight: 800, cursor: "pointer" }}>{isChecked ? "✓" : ""}</div>
+                <div style={{ position: "relative" }}>
+                  <div style={{ height: 120, display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden" }}>
+                    {mode === "photo" ? <img src={FACE_IMG} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : <div style={{ width: "100%", height: "100%", background: "#1a1a1a", display: "flex", alignItems: "center", justifyContent: "center" }}><span style={{ fontSize: 18, color: "#fff" }}>▶</span></div>}
+                  </div>
+                  <div style={{ position: "absolute", top: 6, left: 30, background: "#E8593C", color: "#fff", fontSize: 9, fontWeight: 700, padding: "2px 6px", borderRadius: 3 }}>{item.area}</div>
+                  <div style={{ position: "absolute", bottom: 6, left: 6, background: item.route === "応募" ? "#1D9E75" : "#2E6FD4", color: "#fff", fontSize: 9, fontWeight: 700, padding: "2px 6px", borderRadius: 3 }}>{item.route === "応募" ? "📥 自己応募" : "📩 スカウト"}</div>
+                  {item.video && <div style={{ position: "absolute", top: 6, right: 6, display: "flex", background: "rgba(0,0,0,0.5)", borderRadius: 10, overflow: "hidden" }}>
+                    <div onClick={() => setMode("photo")} style={{ padding: "2px 8px", fontSize: 9, fontWeight: 600, background: mode === "photo" ? "#fff" : "transparent", color: mode === "photo" ? "#1a1a1a" : "#fff", cursor: "pointer" }}>写真</div>
+                    <div onClick={() => setMode("video")} style={{ padding: "2px 8px", fontSize: 9, fontWeight: 600, background: mode === "video" ? "#fff" : "transparent", color: mode === "video" ? "#1a1a1a" : "#fff", cursor: "pointer" }}>動画</div>
+                  </div>}
+                </div>
+                <div style={{ padding: "8px 10px" }}>
+                  <div style={{ textAlign: "center", marginBottom: 4 }}><div style={{ fontSize: 13, fontWeight: 800 }}>{item.name}（{item.age}）</div><div style={{ fontSize: 9, color: "#aaa" }}>{item.kana}</div></div>
+                  <div style={{ fontSize: 10, color: "#555", textAlign: "center", marginBottom: 6, lineHeight: 1.4 }}>{item.cert && <div>{item.cert}</div>}<div>{item.edu}</div></div>
+                  {item.qa && item.qa.map((q, qi) => (<div key={qi} style={{ marginBottom: 4 }}><div style={{ display: "flex", alignItems: "center", gap: 3, marginBottom: 1 }}><span style={{ fontSize: 8, fontWeight: 800, color: "#fff", background: "#333", padding: "1px 4px", borderRadius: 2 }}>Q{qi + 1}</span><span style={{ fontSize: 8, fontWeight: 700 }}>{q.q}</span></div><div style={{ fontSize: 9, color: "#555", lineHeight: 1.4, background: "#f8f8f8", borderRadius: 3, padding: "3px 6px" }}>{q.a}</div></div>))}
+                </div>
+                <div style={{ padding: "0 10px 8px" }}>
+                  <div style={{ fontSize: 9, fontWeight: 700, color: "#2E6FD4", marginBottom: 3 }}>✨ スカウトコメント<span style={{ fontSize: 8, fontWeight: 400, color: "#aaa" }}> Q&Aから自動生成</span></div>
+                  <textarea defaultValue={genScoutMsg(item.qa, item.name)} style={{ width: "100%", minHeight: 56, borderRadius: 4, border: "1px solid #D3D1C7", padding: "4px 6px", fontSize: 9, color: "#333", lineHeight: 1.5, resize: "vertical", fontFamily: "inherit", boxSizing: "border-box" }} />
+                </div>
+                <div style={{ padding: "0 10px 8px" }}><div style={{ fontSize: 9, fontWeight: 600, color: "#8C8A82", marginBottom: 2 }}>📝 メモ</div><input placeholder="社内メモを入力..." style={{ width: "100%", border: "1px solid #E8E6E1", borderRadius: 4, padding: "4px 6px", fontSize: 9, color: "#555", boxSizing: "border-box" }} /></div>
+                <div style={{ display: "flex", gap: 4, padding: "0 10px 8px" }}>
+                  <div style={{ flex: 1, padding: "6px 0", textAlign: "center", background: "#E8593C", color: "#fff", borderRadius: 4, fontSize: 10, fontWeight: 700, cursor: "pointer" }}>スカウト送信</div>
+                  <div style={{ flex: 1, padding: "6px 0", textAlign: "center", background: "#F1EFE8", color: "#888", borderRadius: 4, fontSize: 10, fontWeight: 600, cursor: "pointer" }}>見送り</div>
+                </div>
+              </div>
+            );
+          })}
         </div>
-      </div>
-    </div>
-  );
-}
-
-// Search Card (for 応募者検索)
-function SearchCard({ item, genScoutMsg, showCheck, checked, onCheck }) {
-  const [mode, setMode] = useState("photo");
-  return (
-    <div style={{ background: "#fff", borderRadius: 10, overflow: "hidden", border: "1px solid #e0e0e0", position: "relative" }}>
-      {showCheck && <div onClick={() => onCheck && onCheck(item.name)} style={{ position: "absolute", top: 6, left: 6, zIndex: 10, width: 20, height: 20, borderRadius: 4, background: checked ? "#E8593C" : "rgba(255,255,255,0.9)", border: checked ? "none" : "1.5px solid #ccc", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 11, color: "#fff", fontWeight: 800, cursor: "pointer" }}>{checked ? "✓" : ""}</div>}
-      <div style={{ position: "relative" }}>
-        <div style={{ height: 120, background: mode === "photo" ? `linear-gradient(135deg,${item.pc1},${item.pc2})` : "#1a1a1a", display: "flex", alignItems: "center", justifyContent: "center" }}>
-          {mode === "photo" ? <img src={FACE_IMG} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : <span style={{ fontSize: 18, color: "#fff" }}>▶</span>}
-        </div>
-        <div style={{ position: "absolute", top: 6, left: showCheck ? 30 : 6, background: "#E8593C", color: "#fff", fontSize: 9, fontWeight: 700, padding: "2px 6px", borderRadius: 3 }}>{item.area}</div>
-        <div style={{ position: "absolute", bottom: 6, left: 6, background: item.route === "応募" ? "#1D9E75" : "#2E6FD4", color: "#fff", fontSize: 9, fontWeight: 700, padding: "2px 6px", borderRadius: 3 }}>{item.route === "応募" ? "📥 自己応募" : "📩 スカウト"}</div>
-        {item.video && <div style={{ position: "absolute", top: 6, right: 6, display: "flex", background: "rgba(0,0,0,0.5)", borderRadius: 10, overflow: "hidden" }}>
-          <div onClick={() => setMode("photo")} style={{ padding: "2px 8px", fontSize: 9, fontWeight: 600, background: mode === "photo" ? "#fff" : "transparent", color: mode === "photo" ? "#1a1a1a" : "#fff", cursor: "pointer" }}>写真</div>
-          <div onClick={() => setMode("video")} style={{ padding: "2px 8px", fontSize: 9, fontWeight: 600, background: mode === "video" ? "#fff" : "transparent", color: mode === "video" ? "#1a1a1a" : "#fff", cursor: "pointer" }}>動画</div>
-        </div>}
-      </div>
-      <div style={{ padding: "8px 10px" }}>
-        <div style={{ textAlign: "center", marginBottom: 4 }}><div style={{ fontSize: 13, fontWeight: 800 }}>{item.name}（{item.age}）</div><div style={{ fontSize: 9, color: "#aaa" }}>{item.kana}</div></div>
-        <div style={{ fontSize: 10, color: "#555", textAlign: "center", marginBottom: 6, lineHeight: 1.4 }}>{item.cert && <div>{item.cert}</div>}<div>{item.edu}</div></div>
-        {item.qa && item.qa.map((q, i) => (<div key={i} style={{ marginBottom: 4 }}><div style={{ display: "flex", alignItems: "center", gap: 3, marginBottom: 1 }}><span style={{ fontSize: 8, fontWeight: 800, color: "#fff", background: "#333", padding: "1px 4px", borderRadius: 2 }}>Q{i + 1}</span><span style={{ fontSize: 8, fontWeight: 700 }}>{q.q}</span></div><div style={{ fontSize: 9, color: "#555", lineHeight: 1.4, background: "#f8f8f8", borderRadius: 3, padding: "3px 6px" }}>{q.a}</div></div>))}
-      </div>
-      <div style={{ padding: "0 10px 8px" }}>
-        <div style={{ fontSize: 9, fontWeight: 700, color: "#2E6FD4", marginBottom: 3 }}>✨ スカウトコメント<span style={{ fontSize: 8, fontWeight: 400, color: "#aaa" }}> Q&Aから自動生成</span></div>
-        <textarea defaultValue={genScoutMsg(item.qa, item.name)} style={{ width: "100%", minHeight: 56, borderRadius: 4, border: "1px solid #D3D1C7", padding: "4px 6px", fontSize: 9, color: "#333", lineHeight: 1.5, resize: "vertical", fontFamily: "inherit", boxSizing: "border-box" }} />
-      </div>
-      <div style={{ padding: "0 10px 8px" }}><div style={{ fontSize: 9, fontWeight: 600, color: "#8C8A82", marginBottom: 2 }}>📝 メモ</div><input placeholder="社内メモを入力..." style={{ width: "100%", border: "1px solid #E8E6E1", borderRadius: 4, padding: "4px 6px", fontSize: 9, color: "#555", boxSizing: "border-box" }} /></div>
-      <div style={{ padding: "0 10px 8px" }}>
-        <div style={{ display: "flex", gap: 4 }}><div style={{ flex: 1, padding: "6px 0", textAlign: "center", background: "#E8593C", color: "#fff", borderRadius: 4, fontSize: 10, fontWeight: 700 }}>スカウト返信</div><div style={{ flex: 1, padding: "6px 0", textAlign: "center", background: "#F1EFE8", color: "#888", borderRadius: 4, fontSize: 10, fontWeight: 600 }}>見送り</div></div>
       </div>
     </div>
   );
@@ -328,18 +271,24 @@ function ScreenManageList({ onNavigate }) {
           })}
         </div>
         <div style={{ background: "#fff", border: "1px solid #E8E6E1", borderRadius: 8, overflow: "hidden" }}>
-          <div style={{ display: "grid", gridTemplateColumns: "30px 55px 80px 36px 60px 50px 55px 70px 55px 36px 1fr", background: "#F7F6F3", borderBottom: "1px solid #E8E6E1", fontSize: 10, fontWeight: 600, color: "#5F5E5A", padding: "8px 0" }}>
-            <div style={{ textAlign: "center" }}><input type="checkbox" /></div><div>経路</div><div>氏名</div><div>年齢</div><div>エリア</div><div>学歴</div><div>資格</div><div>ステップ</div><div>ステータス</div><div>MSG</div><div>メモ</div>
+          <div style={{ display: "grid", gridTemplateColumns: "28px 32px 55px 80px 34px 56px 46px 50px 65px 55px 34px 1fr 140px", background: "#F7F6F3", borderBottom: "1px solid #E8E6E1", fontSize: 10, fontWeight: 600, color: "#5F5E5A", padding: "8px 4px", alignItems: "center" }}>
+            <div style={{ textAlign: "center" }}></div><div>写真</div><div>経路</div><div>氏名</div><div>年齢</div><div>エリア</div><div>学歴</div><div>資格</div><div>ステップ</div><div>ステータス</div><div>MSG</div><div>メモ</div><div>アクション</div>
           </div>
           {filtered.map((r, i) => (
-            <div key={i} onClick={() => onNavigate("応募者詳細")} style={{ display: "grid", gridTemplateColumns: "30px 55px 80px 36px 60px 50px 55px 70px 55px 36px 1fr", borderBottom: "1px solid #F1EFE8", fontSize: 12, padding: "8px 0", cursor: "pointer", alignItems: "center" }}>
+            <div key={i} onClick={() => onNavigate("応募者詳細")} style={{ display: "grid", gridTemplateColumns: "28px 32px 55px 80px 34px 56px 46px 50px 65px 55px 34px 1fr 140px", borderBottom: "1px solid #F1EFE8", fontSize: 12, padding: "6px 4px", cursor: "pointer", alignItems: "center" }}>
               <div style={{ textAlign: "center" }}><input type="checkbox" onClick={e => e.stopPropagation()} /></div>
+              <div><img src={FACE_IMG} alt="" style={{ width: 24, height: 24, borderRadius: 12, objectFit: "cover" }} /></div>
               <div><span style={{ fontSize: 8, padding: "2px 4px", borderRadius: 3, background: r.route === "応募" ? "#EEFBF3" : "#EDF4FF", color: r.route === "応募" ? "#1D9E75" : "#2E6FD4", fontWeight: 700 }}>{r.route === "応募" ? "📥応募" : "📩Scout"}</span></div>
               <div style={{ color: "#2E6FD4", fontWeight: 600 }}>{r.n}</div><div>{r.age}</div><div>{r.area}</div><div>{r.edu}</div><div style={{ fontSize: 10 }}>{r.cert}</div>
               <div><span style={{ fontSize: 9, padding: "2px 5px", borderRadius: 3, background: (stepC[r.step] || "#888") + "15", color: stepC[r.step], fontWeight: 600 }}>{stepL[r.step]}</span></div>
               <div><span style={{ fontSize: 9, padding: "2px 4px", borderRadius: 3, background: "#F1EFE8", color: "#5F5E5A", fontWeight: 600 }}>{r.status}</span></div>
               <div style={{ textAlign: "center" }}>{r.msg ? <span style={{ color: "#E8593C", fontWeight: 700 }}>●</span> : <span style={{ color: "#ddd" }}>-</span>}</div>
               <div><input placeholder="メモ" onClick={e => e.stopPropagation()} style={{ border: "1px solid #E8E6E1", borderRadius: 4, padding: "2px 6px", fontSize: 10, width: "90%", color: "#555" }} /></div>
+              <div style={{ display: "flex", gap: 2, flexWrap: "wrap" }} onClick={e => e.stopPropagation()}>
+                {r.step === "s1" && <><div style={{ padding: "3px 6px", borderRadius: 3, background: "#1D9E75", color: "#fff", fontSize: 8, fontWeight: 700, cursor: "pointer" }}>面接へ進む</div><div style={{ padding: "3px 6px", borderRadius: 3, background: "#F1EFE8", color: "#888", fontSize: 8, fontWeight: 600, cursor: "pointer" }}>見送り</div><div onClick={() => onNavigate("応募者詳細")} style={{ padding: "3px 6px", borderRadius: 3, background: "#2E6FD4", color: "#fff", fontSize: 8, fontWeight: 700, cursor: "pointer" }}>💬</div></>}
+                {r.step === "s2" && <><div style={{ padding: "3px 6px", borderRadius: 3, background: "#D4A02E", color: "#fff", fontSize: 8, fontWeight: 700, cursor: "pointer" }}>面談完了</div><div style={{ padding: "3px 6px", borderRadius: 3, background: "#F1EFE8", color: "#888", fontSize: 8, fontWeight: 600, cursor: "pointer" }}>見送り</div><div onClick={() => onNavigate("応募者詳細")} style={{ padding: "3px 6px", borderRadius: 3, background: "#2E6FD4", color: "#fff", fontSize: 8, fontWeight: 700, cursor: "pointer" }}>💬</div></>}
+                {r.step === "s3" && <><div style={{ padding: "3px 6px", borderRadius: 3, background: "#D4A02E", color: "#fff", fontSize: 8, fontWeight: 700, cursor: "pointer" }}>結果報告</div><div onClick={() => onNavigate("応募者詳細")} style={{ padding: "3px 6px", borderRadius: 3, background: "#2E6FD4", color: "#fff", fontSize: 8, fontWeight: 700, cursor: "pointer" }}>💬</div></>}
+              </div>
             </div>
           ))}
         </div>
@@ -707,7 +656,7 @@ function ScreenSettings({ onNavigate }) {
 const SCREEN_MAP = {
   "ログイン": ScreenLogin, "企業情報登録": ScreenCompanyReg, "求人情報登録": ScreenJobReg,
   "ダッシュボード": ScreenDashboard,
-  "応募者検索(リスト)": ScreenSearchList, "応募者検索(カード)": ScreenSearchCard,
+  "応募者検索(カード)": ScreenSearchList,
   "応募者管理(リスト)": ScreenManageList, "応募者管理(カード)": ScreenManageCard,
   "応募者詳細": ScreenApplicantDetail,
   "メッセージ一覧": ScreenMessageList, "チャット画面": ScreenChat, "求人管理": ScreenJobManage, "求人編集": ScreenJobEdit, "設定": ScreenSettings,
